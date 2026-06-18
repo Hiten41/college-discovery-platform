@@ -12,6 +12,7 @@ interface CollegeCardProps {
   rating: string
   nirfRank: number
   onCompare: () => void
+  isCompared?: boolean
 }
 
 function formatFees(fees: string | number) {
@@ -140,13 +141,12 @@ const saveCollege = async () => {
 
         <div className="mb-6">
 
-          <h2 className="text-3xl font-black text-white mb-3 group-hover:text-green-400 transition duration-300">
-
+         <h2 className="text-[1.8rem] font-extrabold tracking-tight text-white mb-2 transition duration-300">
             {props.name}
 
           </h2>
 
-          <p className="text-gray-400 text-lg">
+         <p className="text-zinc-500 text-sm uppercase tracking-wider font-semibold">
             {props.location}
           </p>
 
@@ -154,13 +154,13 @@ const saveCollege = async () => {
 
         <div className="grid grid-cols-2 gap-4 mb-6">
 
-          <div className="bg-[#202020] border border-[#2a2a2a] rounded-2xl p-4">
+     <div className="bg-[#171717] border border-[#262626] rounded-2xl p-4">
 
             <p className="text-gray-500 text-sm mb-2">
               Annual Fees
             </p>
 
-            <h3 className="text-white text-2xl font-black">
+        <h3 className="text-green-300 text-xl font-bold tracking-tight">
 
               {formatFees(props.fees)}
 
@@ -168,7 +168,7 @@ const saveCollege = async () => {
 
           </div>
 
-          <div className="bg-[#202020] border border-[#2a2a2a] rounded-2xl p-4">
+         <div className="bg-[#171717] border border-[#262626] rounded-2xl p-4">
 
             <p className="text-gray-500 text-sm mb-2">
               Avg Package
@@ -184,27 +184,7 @@ const saveCollege = async () => {
 
         </div>
 
-        <div className="flex items-center gap-3 mb-8 flex-wrap">
-
-          <div className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-bold">
-
-            Top Ranked
-
-          </div>
-
-          <div className="px-4 py-2 rounded-full bg-[#232323] border border-[#333] text-gray-300 text-sm font-bold">
-
-            AICTE Approved
-
-          </div>
-
-          <div className="px-4 py-2 rounded-full bg-[#232323] border border-[#333] text-gray-300 text-sm font-bold">
-
-            Placements
-
-          </div>
-
-        </div>
+       
 
         <div className="space-y-3">
 
@@ -231,14 +211,16 @@ const saveCollege = async () => {
 
             </Link>
 
-            <button
-              onClick={props.onCompare}
-              className="px-6 rounded-2xl bg-[#232323] hover:bg-[#2d2d2d] border border-[#333] text-white font-bold transition duration-300 hover:scale-105"
-            >
-
-              Compare
-
-            </button>
+           <button
+  onClick={props.onCompare}
+  className={`px-6 rounded-2xl font-bold transition duration-300 hover:scale-105 border ${
+    props.isCompared
+      ? "bg-green-500 text-black border-green-500"
+      : "bg-[#232323] hover:bg-[#2d2d2d] border-[#333] text-white"
+  }`}
+>
+  {props.isCompared ? "Added ✓" : "Compare"}
+</button>
 
           </div>
 

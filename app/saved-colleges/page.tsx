@@ -7,8 +7,19 @@ export default function SavedCollegesPage() {
   const [loading, setLoading] =
     useState(true);
 
-  const [savedColleges, setSavedColleges] =
-    useState<any[]>([]);
+interface SavedCollege {
+  id: string
+  college: {
+    id: string
+    name: string
+    image: string
+    location: string
+    avgPackage: string
+  }
+}
+
+const [savedColleges, setSavedColleges] =
+  useState<SavedCollege[]>([])
 
   useEffect(() => {
 

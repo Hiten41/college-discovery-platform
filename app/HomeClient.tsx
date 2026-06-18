@@ -1,0 +1,1063 @@
+"use client"
+import { motion } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
+import Navbar from "../components/Navbar"
+import CollegeCard from "../components/CollegeCard"
+type College = {
+  id: string
+
+  name: string
+  location: string
+  state: string | null
+
+ fees: number
+avgPackage: string
+nirfRank: number
+rating: number
+ 
+highestPackage?: string | null
+  image: string
+
+  ownership: string | null
+
+  examsAccepted: string | null
+
+  description: string | null
+
+  website: string | null
+
+  establishedYear: number | null
+
+  accreditation: string | null
+}
+
+type HomeClientProps = {
+  initialColleges: College[]
+}
+
+export default function HomeClient({ initialColleges }: HomeClientProps) {
+  const [searchTerm, setSearchTerm] = useState("")
+  
+ const heroSlides = [
+  {
+    title: "Everything You Need To Choose A College",
+    subtitle: "Compare, evaluate and discover colleges with confidence.",
+  },
+  {
+    title: "Compare India's Top Colleges",
+    subtitle: "Rankings, placements and fees in one place.",
+  },
+  {
+    title: "Find Better Placements & Packages",
+    subtitle: "Analyze placement trends and salary outcomes.",
+  },
+  {
+    title: "Make Data-Driven Career Decisions",
+    subtitle: "Choose colleges using real metrics and insights.",
+  },
+]
+
+const [displayText, setDisplayText] = useState("")
+const [textIndex, setTextIndex] = useState(0)
+  const router = useRouter()
+  const [debouncedSearch, setDebouncedSearch] = useState("")
+
+  const [colleges, setColleges] = useState<College[]>(initialColleges)
+  const [loading, setLoading] = useState(false)
+const [aiQuery, setAiQuery] = useState("")
+ 
+  const [selectedState, setSelectedState] = useState("")
+const [selectedOwnership, setSelectedOwnership] = useState("")
+const [selectedExam, setSelectedExam] = useState("")
+const [maxRank, setMaxRank] = useState(200)
+  const [activeTab, setActiveTab] = useState("Popular")
+  const [maxFees, setMaxFees] = useState(2500000)
+  
+
+  const [compareColleges, setCompareColleges] = useState<College[]>([])
+useEffect(() => {
+  const loadCompareColleges = () => {
+    const stored = JSON.parse(
+      localStorage.getItem("compareColleges") || "[]"
+    );
+
+    setCompareColleges(stored);
+  };
+
+  loadCompareColleges();
+
+  window.addEventListener("pageshow", loadCompareColleges);
+
+  return () => {
+    window.removeEventListener("pageshow", loadCompareColleges);
+  };
+}, []);
+  const didSkipInitialFetchRef = useRef(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
+  useEffect(() => {
+  const handlePageShow = () => {
+    window.location.reload()
+  }
+
+  window.addEventListener("pageshow", handlePageShow)
+
+  return () => {
+    window.removeEventListener("pageshow", handlePageShow)
+  }
+}, [])
+
+  useEffect(() => {
+    const hasInitial = Array.isArray(initialColleges) && initialColleges.length > 0
+    const noFilters =
+  !debouncedSearch.trim() &&
+  !selectedState.trim() &&
+  !selectedOwnership.trim() &&
+  !selectedExam.trim()
+
+    if (!didSkipInitialFetchRef.current && hasInitial && noFilters) {
+      didSkipInitialFetchRef.current = true
+      return
+    }
+
+    didSkipInitialFetchRef.current = true
+
+    const fetchColleges = async () => {
+      setLoading(true)
+
+      try {
+        const params = new URLSearchParams()
+
+        if (debouncedSearch.trim()) {
+          params.set("search", debouncedSearch)
+        }
+
+      if (selectedState.trim()) {
+  params.set("state", selectedState)
+}
+
+if (selectedOwnership.trim()) {
+  params.set("ownership", selectedOwnership)
+}
+
+if (selectedExam.trim()) {
+  params.set("exam", selectedExam)
+}
+
+params.set("maxFees", String(maxFees))
+
+params.set("maxRank", String(maxRank))
+
+        const queryString = params.toString()
+
+        const url = queryString ? `/api/colleges?${queryString}` : "/api/colleges"
+
+        const response = await fetch(url)
+
+if (!response.ok) {
+  throw new Error("Failed to fetch colleges")
+}
+
+const data = await response.json()
+
+if (Array.isArray(data)) {
+  setColleges(data)
+}
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchColleges()
+ }, [
+  debouncedSearch,
+  selectedState,
+  selectedOwnership,
+  selectedExam,
+  maxFees,
+  maxRank,
+  initialColleges,
+])
+const handleAiSearch = async () => {
+  if (!aiQuery.trim()) return;
+
+  try {
+    setLoading(true);
+
+    const response = await fetch("/api/ai-search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: aiQuery,
+      }),
+    });
+
+    const data = await response.json();
+
+    console.log("AI RESPONSE:", data);
+
+    if (!data.response) {
+      alert("No response returned from AI");
+      return;
+    }
+
+   const cleanedResponse = data.response
+  .replace(/```json/g, "")
+  .replace(/```/g, "")
+  .trim();
+
+const filters = JSON.parse(cleanedResponse);
+
+    if (filters.state) {
+      setSelectedState(filters.state);
+    }
+
+    if (filters.ownership) {
+      setSelectedOwnership(filters.ownership);
+    }
+
+    if (filters.exam) {
+      setSelectedExam(filters.exam);
+    }
+
+    if (filters.maxFees) {
+      setMaxFees(filters.maxFees);
+    }
+  } catch (error) {
+    console.error("AI SEARCH ERROR:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+useEffect(() => {
+  const currentText = heroSlides[textIndex].title
+
+  let index = 0
+  let deleting = false
+
+  const interval = setInterval(() => {
+    if (!deleting) {
+      setDisplayText(currentText.slice(0, index + 1))
+
+      index++
+
+      if (index > currentText.length) {
+        deleting = true
+      }
+    } else {
+      setDisplayText(currentText.slice(0, index - 1))
+
+      index-=4
+
+      if (index <= 0) {
+        clearInterval(interval)
+
+        setTextIndex((prev) =>
+          prev === heroSlides.length - 1 ? 0 : prev + 1
+        )
+      }
+    }
+  }, deleting ? 5 : 70)
+
+  return () => clearInterval(interval)
+}, [textIndex])
+
+  function handleCompare(college: College) {
+    const alreadyAdded = compareColleges.find((item) => item.id === college.id)
+    if (alreadyAdded) return
+
+    if (compareColleges.length >= 3) return
+
+   const updated = [
+  ...compareColleges,
+  college,
+]
+
+setCompareColleges(updated)
+
+localStorage.setItem(
+  "compareColleges",
+  JSON.stringify(updated)
+)
+  }
+
+  function removeCollege(id: string) {
+    setCompareColleges(compareColleges.filter((college) => college.id !== id))
+  }
+
+  function extractFees(fees: string | number) {
+    if (typeof fees === "number") {
+      return fees
+    }
+
+    return parseInt(fees.replace(/[^0-9]/g, ""))
+  }
+
+  function getHighestPackage() {
+    if (compareColleges.length === 0) return 0
+
+    return Math.max(
+      ...compareColleges.map((college) =>
+        parseFloat(college.avgPackage.replace(/[^0-9.]/g, ""))
+      )
+    )
+  }
+
+  
+
+  function resetFilters() {
+    setSearchTerm("")
+
+setSelectedState("")
+
+setSelectedOwnership("")
+
+setSelectedExam("")
+
+setMaxFees(2500000)
+
+setMaxRank(200)
+
+
+
+    if (Array.isArray(initialColleges) && initialColleges.length > 0) {
+      setColleges(initialColleges)
+      setLoading(false)
+    }
+  }
+
+  const filteredColleges = Array.isArray(colleges)
+    ? colleges.filter((college) => {
+        const matchesSearch = true
+        const matchesLocation = true
+
+        const feesValue = extractFees(college.fees)
+
+        const matchesFees =
+          (Number.isFinite(feesValue) ? feesValue : Number.POSITIVE_INFINITY) <=
+          maxFees
+
+        
+
+        return matchesSearch && matchesLocation && matchesFees
+      })
+    : []
+
+  if (activeTab === "Highest") {
+    filteredColleges.sort(
+      (a, b) =>
+        parseFloat(b.avgPackage.replace(/[^0-9.]/g, "")) -
+        parseFloat(a.avgPackage.replace(/[^0-9.]/g, ""))
+    )
+  }
+
+  if (activeTab === "Ranked") {
+    filteredColleges.sort((a, b) => a.nirfRank - b.nirfRank)
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0d0d0d]">
+      <Navbar />
+
+      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div
+  className="relative overflow-hidden rounded-[40px] border border-[#1f1f1f] bg-gradient-to-br from-[#0f2b16] via-[#090909] to-[#050505] p-10 md:p-16 mb-14"
+>
+ <>
+  <div className="absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full bg-green-500/20 blur-[140px]" />
+  <div className="absolute bottom-0 left-0 h-[280px] w-[280px] rounded-full bg-emerald-600/10 blur-[120px]" />
+</>
+  <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
+
+    <div>
+
+      <div className="inline-flex items-center px-5 py-2 rounded-full border border-green-500/20 bg-green-500/10 text-green-400 font-semibold mb-8">
+        College Discovery Platform
+      </div>
+
+   <h1 className="
+text-5xl
+md:text-7xl
+font-black
+leading-tight
+bg-gradient-to-r
+from-white
+via-cyan-200
+to-blue-500
+bg-clip-text
+text-transparent
+min-h-[180px]
+">
+  {displayText}
+</h1>
+
+    <p className="text-zinc-200 text-xl md:text-2xl mb-8 max-w-2xl leading-relaxed">
+  {heroSlides[textIndex].subtitle}
+</p>
+
+
+
+<input
+  type="text"
+  placeholder="Search colleges..."
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  className="w-full bg-[#1b1b1b] border border-[#2a2a2a] text-white px-6 py-5 rounded-2xl mb-6"
+/>
+
+      <div className="flex flex-wrap gap-4">
+
+        <button
+          onClick={() =>
+            document
+              .getElementById("colleges")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
+          className="px-6 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-black font-black"
+        >
+          Explore Colleges
+        </button>
+
+        <button
+          onClick={() =>
+            document
+              .getElementById("compare")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
+          className="px-6 py-4 rounded-2xl border border-[#2a2a2a] text-white font-bold hover:border-green-500/40 transition"
+        >
+          Compare Colleges
+        </button>
+
+      </div>
+
+    </div>
+
+   <div className="hidden lg:block">
+
+  <div className="relative overflow-hidden rounded-[36px] border border-[#242424] bg-gradient-to-b from-[#181818] via-[#121212] to-[#0d0d0d] p-8">
+
+    <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
+
+    <div className="flex items-center justify-between mb-8">
+
+      <div>
+
+        <p className="text-green-300 text-sm font-semibold tracking-wide mb-2">
+          TOP RANKED COLLEGES
+        </p>
+
+        <h3 className="text-3xl font-extrabold tracking-tight text-white">
+        India&#39;s Best Institutions
+        </h3>
+
+      </div>
+
+      <div className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-300 text-sm font-semibold">
+        NIRF
+      </div>
+
+    </div>
+
+    <div className="space-y-4">
+
+      <div className="flex items-center justify-between border-b border-white/5 pb-4">
+
+        <div>
+          <p className="text-white font-semibold">
+            IIT Madras
+          </p>
+          <p className="text-zinc-500 text-sm">
+            Chennai
+          </p>
+        </div>
+
+        <span className="text-green-300 font-bold">
+          #1
+        </span>
+
+      </div>
+
+      <div className="flex items-center justify-between border-b border-white/5 pb-4">
+
+        <div>
+          <p className="text-white font-semibold">
+            IIT Delhi
+          </p>
+          <p className="text-zinc-500 text-sm">
+            Delhi
+          </p>
+        </div>
+
+        <span className="text-green-300 font-bold">
+          #2
+        </span>
+
+      </div>
+
+      <div className="flex items-center justify-between border-b border-white/5 pb-4">
+
+        <div>
+          <p className="text-white font-semibold">
+            IIT Bombay
+          </p>
+          <p className="text-zinc-500 text-sm">
+            Mumbai
+          </p>
+        </div>
+
+        <span className="text-green-300 font-bold">
+          #3
+        </span>
+
+      </div>
+
+      <div className="flex items-center justify-between">
+
+        <div>
+          <p className="text-white font-semibold">
+            IIT Kanpur
+          </p>
+          <p className="text-zinc-500 text-sm">
+            Uttar Pradesh
+          </p>
+        </div>
+
+        <span className="text-green-300 font-bold">
+          #4
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+  </div>
+</div>
+<div className="mb-16">
+
+ 
+  <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+
+<div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+
+  <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
+
+  <div className="flex items-start justify-between mb-8">
+
+    <div>
+
+      <h3 className="text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
+        College Comparison
+      </h3>
+
+      <p className="text-zinc-300 text-[16px] font-medium leading-7 max-w-[90%]">
+        Compare placements, fees, rankings and ratings side by side before making a decision.
+      </p>
+
+    </div>
+
+    <div className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-300 text-sm font-semibold tracking-wide">
+      Compare
+    </div>
+
+  </div>
+
+  <div className="border-t border-white/5 pt-5 flex items-center justify-between">
+
+    <span className="
+text-zinc-300
+text-xl
+leading-relaxed
+max-w-2xl
+">
+      Up to 3 colleges
+    </span>
+
+    <button className="text-green-300 font-semibold transition-all duration-300 group-hover:translate-x-1">
+      Explore →
+    </button>
+
+  </div>
+
+</div>
+
+  <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+
+  <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
+
+  <div className="flex items-start justify-between mb-8">
+
+    <div>
+
+      <h3 className="text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
+        Placement Insights
+      </h3>
+
+      <p className="text-zinc-300 text-[16px] font-medium leading-7 max-w-[90%]">
+        Explore average packages, placement performance and career outcomes.
+      </p>
+
+    </div>
+
+    <div className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-300 text-sm font-semibold tracking-wide">
+      Insights
+    </div>
+
+  </div>
+
+  <div className="border-t border-white/5 pt-5 flex items-center justify-between">
+
+    <span className="text-zinc-400 text-sm font-medium">
+      Placement Data
+    </span>
+
+    <button className="text-green-300 font-semibold transition-all duration-300 group-hover:translate-x-1">
+      Explore →
+    </button>
+
+  </div>
+
+</div>
+
+  <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+
+  <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
+
+  <div className="flex items-start justify-between mb-8">
+
+    <div>
+
+      <h3 className="text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
+        NIRF Rankings
+      </h3>
+
+      <p className="text-zinc-300 text-[16px] font-medium leading-7 max-w-[90%]">
+        Discover institutions using verified national ranking information.
+      </p>
+
+    </div>
+
+    <div className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-300 text-sm font-semibold tracking-wide">
+      Rankings
+    </div>
+
+  </div>
+
+  <div className="border-t border-white/5 pt-5 flex items-center justify-between">
+
+    <span className="text-zinc-400 text-sm font-medium">
+      Official Data
+    </span>
+
+    <button className="text-green-300 font-semibold transition-all duration-300 group-hover:translate-x-1">
+      Explore →
+    </button>
+
+  </div>
+
+</div>
+
+    <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+
+  <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
+
+  <div className="flex items-start justify-between mb-8">
+
+    <div>
+
+      <h3 className="text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
+        Smart Discovery
+      </h3>
+
+      <p className="text-zinc-300 text-[16px] font-medium leading-7 max-w-[90%]">
+        Search, filter and discover colleges faster with intelligent tools.
+      </p>
+
+    </div>
+
+    <div className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-300 text-sm font-semibold tracking-wide">
+      Search
+    </div>
+
+  </div>
+
+  <div className="border-t border-white/5 pt-5 flex items-center justify-between">
+
+    <span className="text-zinc-400 text-sm font-medium">
+      Fast Results
+    </span>
+
+    <button className="text-green-300 font-semibold transition-all duration-300 group-hover:translate-x-1">
+      Explore →
+    </button>
+
+  </div>
+
+</div>
+
+  </div>
+
+</div>
+<div id="compare">
+  {compareColleges.length > 0 && (
+    <div className="mb-16 relative overflow-hidden rounded-[36px] border border-[#2a2a2a] bg-gradient-to-br from-[#171717] via-[#121212] to-black p-8">
+
+      <div className="flex items-center justify-between mb-10">
+
+        <div>
+          <h2 className="text-5xl font-black text-white mb-3">
+            Compare Colleges
+          </h2>
+
+          <p className="text-gray-500 text-lg">
+            Side-by-side analysis of selected colleges
+          </p>
+        </div>
+
+        <div className="flex items-center gap-4">
+<div className="flex items-center gap-4">
+
+  <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-5 py-3 rounded-2xl font-bold">
+    {compareColleges.length} Selected
+  </div>
+
+  <button
+    onClick={() => {
+      localStorage.setItem(
+        "compareColleges",
+        JSON.stringify(compareColleges)
+      )
+
+     router.push("/compare")
+    }}
+    className="px-5 py-3 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-black font-black hover:scale-105 transition"
+  >
+    View Detailed Comparison
+  </button>
+
+</div>
+
+ 
+
+</div>
+
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        {compareColleges.map((college) => (
+
+          <div
+            key={college.id}
+            className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-[32px] overflow-hidden"
+          >
+
+            <img
+              src={college.image}
+              alt=""
+              className="h-52 w-full object-cover"
+            />
+
+            <div className="p-6">
+
+              <h3 className="text-2xl font-black text-white mb-4">
+                {college.name}
+              </h3>
+
+              <div className="space-y-4 mb-6">
+
+                <div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
+                  <span className="text-gray-500">Location</span>
+                  <span className="text-white font-bold">
+                    {college.location}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
+                  <span className="text-gray-500">Avg Package</span>
+                  <span
+                    className={`font-bold ${
+                      parseFloat(
+                        college.avgPackage.replace(/[^0-9.]/g, "")
+                      ) === getHighestPackage()
+                        ? "text-green-400"
+                        : "text-white"
+                    }`}
+                  >
+                    {college.avgPackage}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
+                  <span className="text-gray-500">NIRF Rank</span>
+                  <span className="text-white font-bold">
+                    #{college.nirfRank}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
+                  <span className="text-gray-500">Fees</span>
+                  <span className="text-white font-bold">
+                    ₹{college.fees.toLocaleString()}
+                  </span>
+                </div>
+<div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
+  <span className="text-gray-500">
+    Ownership
+  </span>
+
+  <span className="text-white font-bold">
+    {college.ownership}
+  </span>
+</div>
+<div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
+  <span className="text-gray-500">
+    Exam
+  </span>
+
+  <span className="text-white font-bold">
+    {college.examsAccepted}
+  </span>
+</div>
+<div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
+  <span className="text-gray-500">
+    Highest Package
+  </span>
+
+  <span className="text-green-400 font-bold">
+    {college.highestPackage || "-"}
+  </span>
+</div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500">Rating</span>
+                  <span className="text-green-400 font-bold">
+                    {college.rating}
+                  </span>
+                </div>
+
+              </div>
+
+       <div className="flex justify-center mt-4">
+  <button
+    onClick={() => removeCollege(college.id)}
+    className="
+px-6 py-3
+rounded-xl
+bg-gradient-to-r
+from-blue-700
+to-blue-900
+hover:from-blue-600
+hover:to-blue-800
+text-white
+font-semibold
+text-base
+transition-all
+duration-300
+shadow-lg
+shadow-blue-900/40
+hover:scale-105
+"
+  >
+    Remove
+  </button>
+</div>
+
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    </div>
+  )}
+</div>
+        {/* CARDS */}
+
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10">
+          <div className="h-fit sticky top-28">
+          <div className="relative overflow-hidden rounded-[32px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8">
+            <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
+              <div className="flex items-center justify-between mb-8">
+              <h2 className="text-[2rem] font-extrabold tracking-tight text-white">
+  Discover
+</h2>
+
+                <button
+                  onClick={resetFilters}
+                 className="px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20 text-green-300 font-semibold hover:bg-green-500/15 transition"
+                >
+                  Reset
+                </button>
+              </div>
+
+             <div className="space-y-8">
+
+  {/* STATE */}
+
+  <div>
+    <p className="text-zinc-300 mb-4 text-sm uppercase tracking-wider font-semibold">
+      State
+    </p>
+
+    <select
+      value={selectedState}
+      onChange={(e) => setSelectedState(e.target.value)}
+      className="w-full bg-[#202020] border border-[#2a2a2a] text-white px-5 py-4 rounded-2xl outline-none focus:border-green-500"
+    >
+      <option value="">All States</option>
+
+      <option value="Delhi">Delhi</option>
+      <option value="Tamil Nadu">Tamil Nadu</option>
+      <option value="Maharashtra">Maharashtra</option>
+      <option value="Karnataka">Karnataka</option>
+      <option value="Telangana">Telangana</option>
+      <option value="Rajasthan">Rajasthan</option>
+      <option value="Punjab">Punjab</option>
+      <option value="Uttar Pradesh">Uttar Pradesh</option>
+      <option value="West Bengal">West Bengal</option>
+    </select>
+  </div>
+
+  {/* OWNERSHIP */}
+
+  <div>
+    <p className="text-zinc-300 mb-4 text-sm uppercase tracking-wider font-semibold">
+      Ownership
+    </p>
+
+    <select
+      value={selectedOwnership}
+      onChange={(e) => setSelectedOwnership(e.target.value)}
+      className="w-full bg-[#202020] border border-[#2a2a2a] text-white px-5 py-4 rounded-2xl outline-none focus:border-green-500"
+    >
+      <option value="">All Types</option>
+
+      <option value="Government">Government</option>
+      <option value="Private">Private</option>
+    </select>
+  </div>
+
+  {/* EXAM */}
+
+  <div>
+    <p className="text-zinc-300 mb-4 text-sm uppercase tracking-wider font-semibold">
+      Exam Accepted
+    </p>
+
+    <select
+      value={selectedExam}
+      onChange={(e) => setSelectedExam(e.target.value)}
+      className="w-full bg-[#202020] border border-[#2a2a2a] text-white px-5 py-4 rounded-2xl outline-none focus:border-green-500"
+    >
+      <option value="">All Exams</option>
+
+      <option value="JEE Advanced">JEE Advanced</option>
+      <option value="JEE Main">JEE Main</option>
+      <option value="BITSAT">BITSAT</option>
+      <option value="VITEEE">VITEEE</option>
+      <option value="MET">MET</option>
+    </select>
+  </div>
+
+  {/* MAX FEES */}
+
+  <div>
+    <div className="flex items-center justify-between mb-4">
+      <p className="text-zinc-300 font-semibold">
+        Max Fees
+      </p>
+
+      <p className="text-green-400 font-bold">
+        ₹{(maxFees / 100000).toFixed(1)}L
+      </p>
+    </div>
+
+    <input
+      type="range"
+      min="50000"
+      max="600000"
+      step="25000"
+      value={maxFees}
+      onChange={(e) =>
+        setMaxFees(Number(e.target.value))
+      }
+      className="w-full accent-green-500"
+    />
+  </div>
+
+  {/* NIRF RANK */}
+
+  <div>
+    <div className="flex items-center justify-between mb-4">
+      <p className="text-zinc-300 font-semibold">
+        Max NIRF Rank
+      </p>
+
+      <p className="text-green-400 font-bold">
+        {maxRank}
+      </p>
+    </div>
+
+    <input
+      type="range"
+      min="1"
+      max="200"
+      step="1"
+      value={maxRank}
+      onChange={(e) =>
+        setMaxRank(Number(e.target.value))
+      }
+      className="w-full accent-green-500"
+    />
+  </div>
+
+</div>
+            </div>
+          </div>
+
+          <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+              {filteredColleges.map((college) => (
+                <CollegeCard
+                  key={college.id}
+                  id={college.id}
+                  name={college.name}
+                  image={college.image}
+                  location={college.location}
+                  fees={String(college.fees)}
+                  avgPackage={college.avgPackage}
+                  rating={String(college.rating)}
+                  nirfRank={college.nirfRank}
+                 
+                  isCompared={
+  compareColleges.some(
+    (item) => item.id === college.id
+  )
+}
+ onCompare={() => handleCompare(college)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

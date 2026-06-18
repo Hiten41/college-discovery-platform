@@ -5,29 +5,24 @@ import { useEffect, useState } from "react"
 
 export default function Navbar() {
 
-  const [wishlistCount, setWishlistCount] =
-    useState(0)
 
-  const [user, setUser] =
-    useState<any>(null)
+ interface User {
+  id: string
+  name: string
+  email: string
+}
 
-  useEffect(() => {
+const [user] = useState<User | null>(() => {
 
-    const saved =
-      JSON.parse(
-        localStorage.getItem("savedColleges") || "[]"
-      )
+  if (typeof window === "undefined") {
+    return null
+  }
 
-    setWishlistCount(saved.length)
+  return JSON.parse(
+    localStorage.getItem("user") || "null"
+  )
 
-    const storedUser =
-      JSON.parse(
-        localStorage.getItem("user") || "null"
-      )
-
-    setUser(storedUser)
-
-  }, [])
+})
 
   const handleLogout = () => {
 
@@ -81,13 +76,38 @@ export default function Navbar() {
             Home
           </Link>
 
-          <button className="text-gray-400 hover:text-white transition duration-300 font-medium">
-            Top Colleges
-          </button>
+        <button
+  onClick={() =>
+    document
+      .getElementById("colleges")
+      ?.scrollIntoView({ behavior: "smooth" })
+  }
+  className="text-gray-400 hover:text-white transition duration-300 font-medium"
+>
+  Top Colleges
+</button>
 
-          <button className="text-gray-400 hover:text-white transition duration-300 font-medium">
-            Compare
-          </button>
+<button
+  onClick={() =>
+    document
+      .getElementById("compare")
+      ?.scrollIntoView({ behavior: "smooth" })
+  }
+  className="text-gray-400 hover:text-white transition duration-300 font-medium"
+>
+  Compare
+</button>
+
+<button
+  onClick={() =>
+    document
+      .getElementById("rankings")
+      ?.scrollIntoView({ behavior: "smooth" })
+  }
+  className="text-gray-400 hover:text-white transition duration-300 font-medium"
+>
+  Rankings
+</button>
 
           <Link
             href="/saved-colleges"
@@ -96,9 +116,7 @@ export default function Navbar() {
             Saved Colleges
           </Link>
 
-          <button className="text-gray-400 hover:text-white transition duration-300 font-medium">
-            Rankings
-          </button>
+          
 
         </div>
 

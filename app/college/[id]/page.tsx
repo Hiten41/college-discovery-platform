@@ -4,8 +4,24 @@ import { useState } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import Navbar from "@/components/Navbar"
-import colleges from "@/data/colleges"
 
+interface College {
+  id: string
+  name: string
+  image: string
+  location: string
+  fees: string
+  avgPackage: string
+  rating: string
+  nirfRank: number
+  ownership: string
+  examsAccepted: string
+  establishedYear: number
+    website: string
+  highestPackage: string
+  description: string
+  accreditation: string
+}
 export default function CollegeDetails() {
 
   const params = useParams()
@@ -22,47 +38,47 @@ const [studentName, setStudentName] =
 const [studentEmail, setStudentEmail] =
   useState("")
 
-  const [college, setCollege] = useState<any>(null)
+  const [college, setCollege] =
+  useState<College | null>(null)
+
+const [similarColleges, setSimilarColleges] =
+  useState<College[]>([])
 const [loading, setLoading] = useState(true)
 const [applicationSubmitted,
   setApplicationSubmitted] =
   useState(false)
+
 useEffect(() => {
   const fetchCollege = async () => {
     try {
       const res = await fetch("/api/colleges")
       const data = await res.json()
 
-      const foundCollege = data.find(
-        (item: any) => item.id === id
-      )
+  const foundCollege = data.find(
+  (item: College) => item.id === id
+)
 
-      setCollege(foundCollege)
-      setLoading(false)
-    } catch (error) {
-      console.error(error)
-    }
-  }
+if (!foundCollege) {
+  setCollege(null)
+  setLoading(false)
+  return
+}
 
-  if (id) {
-    fetchCollege()
-  }
-}, [id])
-useEffect(() => {
-  const fetchCollege = async () => {
-    try {
-      const res = await fetch("/api/colleges")
-      const data = await res.json()
+setCollege(foundCollege)
 
-      const foundCollege = data.find(
-        (item: any) => item.id === id
-      )
-
-      setCollege(foundCollege)
+setSimilarColleges(
+  data
+    .filter(
+      (item: College) =>
+        item.id !== foundCollege.id
+    )
+    .slice(0, 3)
+)
       setLoading(false)
 
     } catch (error) {
       console.error(error)
+      setLoading(false)
     }
   }
 
@@ -156,32 +172,56 @@ if (loading) {
 
             </h1>
 
-            <p className="text-2xl text-gray-300 mb-8">
+           <p className="text-2xl text-gray-300 mb-4">
 
               {college.location}
 
             </p>
+            <div className="flex flex-wrap gap-3 mt-4">
 
-            <div className="flex gap-5 flex-wrap">
+  <span className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-300">
+    {college.ownership}
+  </span>
 
-              <button
-  onClick={() =>
-    setShowApplyModal(true)
-  }
-  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black px-10 py-5 rounded-2xl transition duration-300 hover:scale-105 shadow-[0_10px_40px_rgba(34,197,94,0.3)]"
->
-  Apply Now
-</button>
+  <span className="px-4 py-2 rounded-full bg-[#202020] border border-[#2a2a2a] text-white">
+    {college.examsAccepted}
+  </span>
 
-             <a
-  href="/brochure.pdf"
-  download
-  className="bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-xl px-10 py-5 rounded-2xl font-bold transition duration-300 inline-flex items-center"
->
-  Download Brochure
-</a>
+  <span className="px-4 py-2 rounded-full bg-[#202020] border border-[#2a2a2a] text-white">
+    Est. {college.establishedYear}
+  </span>
 
-            </div>
+</div>
+
+     <div className="flex gap-5 flex-wrap">
+
+  <button
+    onClick={() =>
+      setShowApplyModal(true)
+    }
+    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black px-10 py-5 rounded-2xl transition duration-300 hover:scale-105 shadow-[0_10px_40px_rgba(34,197,94,0.3)]"
+  >
+    Apply Now
+  </button>
+
+  <a
+    href="/brochure.pdf"
+    download
+    className="bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-xl px-10 py-5 rounded-2xl font-bold transition duration-300 inline-flex items-center"
+  >
+    Download Brochure
+  </a>
+
+  <a
+    href={college.website || "#"}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-xl px-10 py-5 rounded-2xl font-bold transition duration-300 inline-flex items-center"
+  >
+    Official Website
+  </a>
+
+</div>
 
           </div>
 
@@ -220,7 +260,7 @@ if (loading) {
             </p>
 
             <h2 className="text-4xl font-black text-green-400">
-              ₹1.2Cr
+             {college.highestPackage || "N/A"}
             </h2>
 
           </div>
@@ -232,7 +272,7 @@ if (loading) {
             </p>
 
             <h2 className="text-4xl font-black text-green-400">
-              92%
+            N/A
             </h2>
 
           </div>
@@ -251,9 +291,60 @@ if (loading) {
 
               <p className="text-gray-400 text-lg leading-relaxed">
 
-                {college.name} is one of the top institutions in India known for academic excellence, world-class placements, modern infrastructure and outstanding campus life. The institute attracts students from across the country and offers premium opportunities in technology, research and innovation.
+              {college.description}
 
               </p>
+              <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10 mt-10">
+
+  <h2 className="text-4xl font-black text-white mb-8">
+    College Information
+  </h2>
+
+  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+    <div className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-2xl p-6">
+      <p className="text-gray-500 mb-2">
+        Established
+      </p>
+
+      <p className="text-xl font-bold text-white">
+        {college.establishedYear || "N/A"}
+      </p>
+    </div>
+
+    <div className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-2xl p-6">
+      <p className="text-gray-500 mb-2">
+        Ownership
+      </p>
+
+      <p className="text-xl font-bold text-white">
+        {college.ownership || "N/A"}
+      </p>
+    </div>
+
+    <div className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-2xl p-6">
+      <p className="text-gray-500 mb-2">
+        Accreditation
+      </p>
+
+      <p className="text-xl font-bold text-white">
+        {college.accreditation || "N/A"}
+      </p>
+    </div>
+
+    <div className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-2xl p-6">
+      <p className="text-gray-500 mb-2">
+        Exam Accepted
+      </p>
+
+      <p className="text-xl font-bold text-white">
+        {college.examsAccepted || "N/A"}
+      </p>
+    </div>
+
+  </div>
+
+</div>
 
             </div>
 
@@ -326,7 +417,7 @@ if (loading) {
                     </span>
 
                     <span className="text-green-400 font-black">
-                      92%
+                     N/A
                     </span>
 
                   </div>
@@ -394,7 +485,7 @@ if (loading) {
                   </p>
 
                   <h3 className="text-3xl font-black text-green-400">
-                    ₹1.2Cr
+                    {college.highestPackage || "N/A"}
                   </h3>
 
                 </div>
@@ -722,10 +813,7 @@ if (loading) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            {colleges
-              .filter((item) => item.id !== college.id)
-              .slice(0, 3)
-              .map((item) => (
+          {similarColleges.map((item) => (
 
                 <div
                   key={item.id}

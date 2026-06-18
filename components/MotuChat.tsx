@@ -227,12 +227,12 @@ export default function MotuChat() {
 
       <div
         className={`fixed inset-0 z-[80] transition duration-300 ${
-          isOpen ? "pointer-events-auto" : "pointer-events-none"
+          isOpen ? "pointer-events-auto lg:pointer-events-none" : "pointer-events-none"
         }`}
         aria-hidden={!isOpen}
       >
         <div
-          className={`absolute inset-0 bg-black/55 backdrop-blur-[2px] transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/55 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden ${
             isOpen ? "opacity-100" : "opacity-0"
           }`}
           onClick={() => setIsOpen(false)}
@@ -242,7 +242,7 @@ export default function MotuChat() {
           role="dialog"
           aria-modal="true"
           aria-label="Ask Motu chat"
-          className={`absolute bottom-0 right-0 top-0 flex w-full max-w-[440px] flex-col border-l border-white/10 bg-[#080808] shadow-[0_0_80px_rgba(0,0,0,0.75)] transition duration-300 ease-out sm:right-4 sm:top-4 sm:bottom-4 sm:rounded-[28px] sm:border ${
+          className={`absolute bottom-0 right-0 top-0 flex w-full max-w-[440px] flex-col border-l border-white/10 bg-[#080808] shadow-[0_0_80px_rgba(0,0,0,0.75)] transition duration-300 ease-out sm:right-4 sm:top-4 sm:bottom-4 sm:rounded-[28px] sm:border lg:pointer-events-auto lg:right-6 lg:top-6 lg:bottom-6 lg:max-w-[420px] ${
             isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
           }`}
         >

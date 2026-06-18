@@ -9,6 +9,11 @@ import {
 import { buildGroundedPrompt } from "@/lib/motu/prompt";
 import { collegeRecommendationEngine } from "@/lib/motu/recommendation";
 import {
+  formatRankPredictionForChat,
+  predictColleges,
+  rankPredictionInputFromMessage,
+} from "@/lib/rankPredictor/predictor";
+import {
   compareColleges,
   findMentionedCollegeNames,
   getAllColleges,
@@ -437,6 +442,28 @@ export async function POST(request: Request) {
 
     const history = parseHistory(body.history);
     const activeCollegeContext = parseActiveCollegeContext(body.activeCollegeContext);
+    const rankPredictionInput = rankPredictionInputFromMessage(message);
+    if (rankPredictionInput) {
+      const colleges = await getAllColleges();
+      const prediction = predictColleges(colleges, rankPredictionInput, 3);
+      const recommendedCollegeNames = [
+        ...prediction.groups.target,
+        ...prediction.groups.safe,
+        ...prediction.groups.dream,
+      ].map(({ college }) => college.name);
+      const nextActiveCollegeContext = updateActiveCollegeContext({
+        message,
+        currentContext: activeCollegeContext,
+        availableCollegeNames: colleges.map((college) => college.name),
+        recommendedCollegeNames,
+      });
+
+      return NextResponse.json({
+        reply: formatRankPredictionForChat(prediction),
+        activeCollegeContext: nextActiveCollegeContext,
+      });
+    }
+
     const resolvedCollegeContext = await resolveFollowUpCollegeContext(
       message,
       history,

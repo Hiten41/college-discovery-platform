@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 export default function Navbar() {
 
@@ -98,16 +98,12 @@ const [user] = useState<User | null>(() => {
   Compare
 </button>
 
-<button
-  onClick={() =>
-    document
-      .getElementById("rankings")
-      ?.scrollIntoView({ behavior: "smooth" })
-  }
+<Link
+  href="/rank-predictor"
   className="text-gray-400 hover:text-white transition duration-300 font-medium"
 >
-  Rankings
-</button>
+  Rank Predictor
+</Link>
 
           <Link
             href="/saved-colleges"

@@ -23,6 +23,7 @@ type ChatMessage = {
 type ChatResponse = {
   reply?: string;
   error?: string;
+  activeCollegeContext?: string[];
 };
 
 const quickActions = [
@@ -138,6 +139,7 @@ function MessageContent({ content }: { content: string }) {
 export default function MotuChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
+  const [activeCollegeContext, setActiveCollegeContext] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const endRef = useRef<HTMLDivElement | null>(null);
@@ -172,6 +174,7 @@ export default function MotuChat() {
             .filter((message) => message.id !== initialMessage.id)
             .slice(-10)
             .map(({ role, content }) => ({ role, content })),
+          activeCollegeContext,
         }),
       });
 
@@ -182,6 +185,10 @@ export default function MotuChat() {
       }
 
       const assistantReply = data.reply;
+
+      if (Array.isArray(data.activeCollegeContext)) {
+        setActiveCollegeContext(data.activeCollegeContext);
+      }
 
       setMessages((currentMessages) => [
         ...currentMessages,

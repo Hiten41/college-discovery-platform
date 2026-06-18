@@ -5,6 +5,7 @@ export type QueryOperation =
   | "LIST_COLLEGES"
   | "COLLEGE_DETAILS"
   | "COMPARE_COLLEGES"
+  | "CONTEXT_FOLLOW_UP"
   | "TOP_BY_PACKAGE"
   | "FILTER_BY_BUDGET"
   | "RECOMMEND_COLLEGES"
@@ -48,3 +49,4 @@ export type RetrievalResult = {
   notes: string[];
 };
 
+export type ActiveCollegeContext = string[];

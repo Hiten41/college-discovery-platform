@@ -1,6 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { classifyQuery, normalizeText } from "@/lib/motu/classifier";
+import {
+  applyActiveContextClassification,
+  isContextualFollowUp,
+  updateActiveCollegeContext,
+} from "@/lib/motu/context";
 import { buildGroundedPrompt } from "@/lib/motu/prompt";
 import { collegeRecommendationEngine } from "@/lib/motu/recommendation";
 import {
@@ -13,6 +18,7 @@ import {
   parseComparisonNames,
 } from "@/lib/motu/retrieval";
 import type {
+  ActiveCollegeContext,
   ChatHistoryMessage,
   CollegeRecord,
   QueryClassification,
@@ -25,6 +31,7 @@ export const runtime = "nodejs";
 type ChatRequestBody = {
   message?: unknown;
   history?: unknown;
+  activeCollegeContext?: unknown;
 };
 
 function parseMessage(value: unknown): string | null {
@@ -50,6 +57,40 @@ function parseHistory(value: unknown): ChatHistoryMessage[] {
     .slice(-10);
 }
 
+function parseActiveCollegeContext(value: unknown): ActiveCollegeContext {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((name): name is string => typeof name === "string" && name.trim().length > 0)
+    .map((name) => name.trim().slice(0, 160))
+    .slice(0, 10);
+}
+
+async function resolveFollowUpCollegeContext(
+  message: string,
+  history: ChatHistoryMessage[],
+  activeCollegeContext: ActiveCollegeContext,
+): Promise<ActiveCollegeContext> {
+  if (!isContextualFollowUp(message)) {
+    return activeCollegeContext;
+  }
+
+  const allColleges = await getAllColleges();
+  if (findMentionedCollegeNames(message, allColleges).length > 0) {
+    return [];
+  }
+
+  for (const item of [...history].reverse()) {
+    if (item.role !== "user" || !/\b(compare|comparison of)\b/i.test(item.content)) continue;
+
+    const compared = await compareColleges(parseComparisonNames(item.content));
+    if (compared.colleges.length >= 2) {
+      return compared.colleges.map((college) => college.name);
+    }
+  }
+
+  return activeCollegeContext;
+}
+
 function formatFees(value: number | null): string {
   return value === null ? "N/A" : `Rs. ${value.toLocaleString("en-IN")}`;
 }
@@ -66,21 +107,6 @@ function collegeTable(colleges: CollegeRecord[]): string {
   return [header, divider, ...rows].join("\n");
 }
 
-function resolveNamesFromHistory(
-  history: ChatHistoryMessage[],
-  allColleges: CollegeRecord[],
-): string[] {
-  const names: string[] = [];
-  for (const item of [...history].reverse()) {
-    if (item.role !== "user") continue;
-    for (const name of findMentionedCollegeNames(item.content, allColleges)) {
-      if (!names.includes(name)) names.push(name);
-    }
-    if (names.length >= 2) break;
-  }
-  return names.slice(0, 4);
-}
-
 function inferLocation(
   message: string,
   colleges: CollegeRecord[],
@@ -95,8 +121,12 @@ function inferLocation(
 async function retrieveDatabaseContext(
   message: string,
   initialClassification: QueryClassification,
-  history: ChatHistoryMessage[],
-): Promise<{ classification: QueryClassification; result: RetrievalResult }> {
+  activeCollegeContext: ActiveCollegeContext,
+): Promise<{
+  classification: QueryClassification;
+  result: RetrievalResult;
+  availableCollegeNames: string[];
+}> {
   const emptyResult: RetrievalResult = {
     colleges: [],
     requestedNames: [],
@@ -104,38 +134,75 @@ async function retrieveDatabaseContext(
     notes: [],
   };
 
-  if (initialClassification.type === "GENERAL_QUERY") {
-    return { classification: initialClassification, result: emptyResult };
-  }
+  const contextualClassification = applyActiveContextClassification(
+    message,
+    initialClassification,
+    activeCollegeContext,
+  );
 
-  if (initialClassification.operation === "LIST_COLLEGES" || initialClassification.operation === "DEBUG_DATABASE") {
-    const colleges = await getAllColleges();
-    return { classification: initialClassification, result: { ...emptyResult, colleges } };
-  }
-
-  if (initialClassification.operation === "TOP_BY_PACKAGE") {
-    const colleges = await getTopCollegesByPackage(10);
-    return { classification: initialClassification, result: { ...emptyResult, colleges } };
-  }
-
-  if (initialClassification.operation === "FILTER_BY_BUDGET" && initialClassification.budget !== null) {
-    const colleges = await getCollegesUnderBudget(initialClassification.budget);
-    return { classification: initialClassification, result: { ...emptyResult, colleges } };
+  if (contextualClassification.type === "GENERAL_QUERY") {
+    return {
+      classification: contextualClassification,
+      result: emptyResult,
+      availableCollegeNames: [],
+    };
   }
 
   const allColleges = await getAllColleges();
+  const availableCollegeNames = allColleges.map((college) => college.name);
+
+  if (contextualClassification.operation === "LIST_COLLEGES" || contextualClassification.operation === "DEBUG_DATABASE") {
+    return {
+      classification: contextualClassification,
+      result: { ...emptyResult, colleges: allColleges },
+      availableCollegeNames,
+    };
+  }
+
+  if (contextualClassification.operation === "TOP_BY_PACKAGE") {
+    const colleges = await getTopCollegesByPackage(10);
+    return {
+      classification: contextualClassification,
+      result: { ...emptyResult, colleges },
+      availableCollegeNames,
+    };
+  }
+
+  if (contextualClassification.operation === "FILTER_BY_BUDGET" && contextualClassification.budget !== null) {
+    const colleges = await getCollegesUnderBudget(contextualClassification.budget);
+    return {
+      classification: contextualClassification,
+      result: { ...emptyResult, colleges },
+      availableCollegeNames,
+    };
+  }
+
   const location = inferLocation(message, allColleges);
-  const classification = { ...initialClassification, location };
+  const classification = { ...contextualClassification, location };
+
+  if (classification.operation === "CONTEXT_FOLLOW_UP") {
+    const validatedContext = activeCollegeContext.filter((name) =>
+      availableCollegeNames.includes(name),
+    );
+    const compared = await compareColleges(validatedContext);
+    return {
+      classification,
+      result: {
+        ...emptyResult,
+        requestedNames: validatedContext,
+        ...compared,
+      },
+      availableCollegeNames,
+    };
+  }
 
   if (classification.operation === "COMPARE_COLLEGES") {
-    let requestedNames = parseComparisonNames(message);
-    if (/\b(which one|which is better|what about them)\b/.test(normalizeText(message))) {
-      requestedNames = resolveNamesFromHistory(history, allColleges);
-    }
+    const requestedNames = parseComparisonNames(message);
     const compared = await compareColleges(requestedNames);
     return {
       classification,
       result: { ...emptyResult, requestedNames, ...compared },
+      availableCollegeNames,
     };
   }
 
@@ -150,6 +217,7 @@ async function retrieveDatabaseContext(
         requestedNames,
         missingNames: colleges.length === 0 ? [message] : [],
       },
+      availableCollegeNames,
     };
   }
 
@@ -177,18 +245,22 @@ async function retrieveDatabaseContext(
   return {
     classification,
     result: { ...emptyResult, colleges: ranked.map(({ college }) => college), notes },
+    availableCollegeNames,
   };
 }
 
-function buildDatabaseReply(
+export function buildDatabaseReply(
+  message: string,
   classification: QueryClassification,
   result: RetrievalResult,
+  activeCollegeContext: ActiveCollegeContext,
 ): string {
   if (classification.operation === "DEBUG_DATABASE") {
     return [
-      `Query type: ${classification.type}`,
-      `Colleges retrieved: ${result.colleges.length}`,
-      "College names:",
+      `Query classification: ${classification.type}`,
+      `Active college context: ${activeCollegeContext.length > 0 ? activeCollegeContext.join(", ") : "None"}`,
+      `Record count: ${result.colleges.length}`,
+      "Retrieved colleges:",
       ...result.colleges.map((college) => `- ${college.name}`),
     ].join("\n");
   }
@@ -218,6 +290,58 @@ function buildDatabaseReply(
         (packageToLpa(b.avgPackage) ?? 0) - (packageToLpa(a.avgPackage) ?? 0),
       )[0]?.name ?? "Not available"
     } has the stronger stored average-package figure. Compare fees, rank, location, and exams alongside placements.`;
+  }
+
+  if (classification.operation === "CONTEXT_FOLLOW_UP") {
+    if (result.colleges.length === 0) {
+      return "I could not retrieve the colleges from the active conversation context.";
+    }
+
+    const normalized = normalizeText(message);
+    if (/\b(fee|fees|cost|price)\b/.test(normalized)) {
+      const collegesWithFees = [...result.colleges]
+        .filter((college) => college.fees !== null)
+        .sort((a, b) => (a.fees ?? Infinity) - (b.fees ?? Infinity));
+      const lowest = collegesWithFees[0];
+      const allEqual =
+        collegesWithFees.length > 1 &&
+        collegesWithFees.every((college) => college.fees === lowest?.fees);
+      if (allEqual) {
+        return `${collegeTable(result.colleges)}\n\n**Fees:** The stored fee is the same for both colleges at ${formatFees(lowest?.fees ?? null)}.`;
+      }
+      return `${collegeTable(result.colleges)}\n\n**Fees:** ${lowest?.name ?? "No college"} has the lower stored fee at ${formatFees(lowest?.fees ?? null)}.`;
+    }
+    if (/\b(rank|ranks|ranking|rankings|nirf)\b/.test(normalized)) {
+      const highestRanked = [...result.colleges]
+        .filter((college) => college.nirfRank !== null)
+        .sort((a, b) => (a.nirfRank ?? Infinity) - (b.nirfRank ?? Infinity))[0];
+      return `${collegeTable(result.colleges)}\n\n**Ranking:** ${highestRanked?.name ?? "No college"} has the stronger stored NIRF rank (${highestRanked?.nirfRank ?? "N/A"}).`;
+    }
+    if (/\b(location|city|state)\b/.test(normalized)) {
+      return result.colleges
+        .map((college) => `- **${college.name}:** ${college.location}${college.state ? `, ${college.state}` : ""}`)
+        .join("\n");
+    }
+    if (/\b(roi|return on investment)\b/.test(normalized)) {
+      const rankedByRoi = [...result.colleges].sort((a, b) => {
+        const aRoi = (packageToLpa(a.avgPackage) ?? 0) / ((a.fees ?? Infinity) / 100000);
+        const bRoi = (packageToLpa(b.avgPackage) ?? 0) / ((b.fees ?? Infinity) / 100000);
+        return bRoi - aRoi;
+      });
+      return `${collegeTable(result.colleges)}\n\n**ROI:** ${rankedByRoi[0]?.name ?? "Not available"} has the stronger rough ratio of stored average package to stored fees. Verify the fee period and branch-wise placement report before deciding.`;
+    }
+    if (/\b(recommend|choose|pick)\b/.test(normalized)) {
+      const ranked = collegeRecommendationEngine(result.colleges, classification);
+      const best = ranked[0];
+      return `${collegeTable(result.colleges)}\n\n**Recommendation:** ${best?.college.name ?? "No clear choice"}\n${best?.reasons.map((reason) => `- ${reason}`).join("\n") ?? "- Insufficient stored data"}`;
+    }
+    if (/\b(package|packages|placement|placements)\b/.test(normalized)) {
+      const strongest = [...result.colleges].sort(
+        (a, b) => (packageToLpa(b.avgPackage) ?? 0) - (packageToLpa(a.avgPackage) ?? 0),
+      )[0];
+      return `${collegeTable(result.colleges)}\n\n**Placements:** ${strongest?.name ?? "Not available"} has the higher stored average package (${strongest?.avgPackage ?? "N/A"}).`;
+    }
+    return collegeTable(result.colleges);
   }
 
   if (classification.operation === "TOP_BY_PACKAGE") {
@@ -312,20 +436,50 @@ export async function POST(request: Request) {
     }
 
     const history = parseHistory(body.history);
+    const activeCollegeContext = parseActiveCollegeContext(body.activeCollegeContext);
+    const resolvedCollegeContext = await resolveFollowUpCollegeContext(
+      message,
+      history,
+      activeCollegeContext,
+    );
     const initialClassification = classifyQuery(message);
-    const { classification, result } = await retrieveDatabaseContext(
+    const { classification, result, availableCollegeNames } = await retrieveDatabaseContext(
       message,
       initialClassification,
-      history,
+      resolvedCollegeContext,
     );
+    const recommendedCollegeNames =
+      classification.operation === "RECOMMEND_COLLEGES"
+        ? result.colleges.map((college) => college.name)
+        : [];
+    const resolvedCollegeNames =
+      classification.operation === "COMPARE_COLLEGES" ||
+      classification.operation === "COLLEGE_DETAILS"
+        ? result.colleges.map((college) => college.name)
+        : [];
+    const nextActiveCollegeContext = updateActiveCollegeContext({
+      message,
+      currentContext: resolvedCollegeContext,
+      availableCollegeNames,
+      resolvedCollegeNames,
+      recommendedCollegeNames,
+    });
 
     if (classification.type === "DATABASE_QUERY") {
-      return NextResponse.json({ reply: buildDatabaseReply(classification, result) });
+      return NextResponse.json({
+        reply: buildDatabaseReply(
+          message,
+          classification,
+          result,
+          nextActiveCollegeContext,
+        ),
+        activeCollegeContext: nextActiveCollegeContext,
+      });
     }
 
     try {
       const reply = await generateGroundedReply(message, classification, result, history);
-      return NextResponse.json({ reply });
+      return NextResponse.json({ reply, activeCollegeContext: nextActiveCollegeContext });
     } catch (error) {
       console.error("ASK MOTU MODEL ERROR:", error);
       return NextResponse.json({
@@ -333,6 +487,7 @@ export async function POST(request: Request) {
           classification.type === "HYBRID_QUERY"
             ? buildRecommendationFallback(classification, result)
             : buildGeneralFallback(message),
+        activeCollegeContext: nextActiveCollegeContext,
       });
     }
   } catch (error) {

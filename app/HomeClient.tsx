@@ -390,10 +390,56 @@ setMaxRank(200)
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d]">
+    <div
+      className="relative min-h-screen overflow-hidden bg-[#030409]"
+      style={{
+        backgroundColor: "#030409",
+        backgroundImage:
+          "radial-gradient(circle at 16% 8%, rgba(37, 99, 235, 0.11), transparent 34%), radial-gradient(circle at 84% 18%, rgba(124, 58, 237, 0.15), transparent 30%), radial-gradient(circle at 22% 68%, rgba(236, 72, 153, 0.075), transparent 34%), radial-gradient(circle at 78% 92%, rgba(37, 99, 235, 0.08), transparent 40%), linear-gradient(180deg, #030409 0%, #050615 45%, #030409 100%)",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            "radial-gradient(circle at 14% 12%, rgba(37, 99, 235, 0.12), transparent 30%), radial-gradient(circle at 86% 22%, rgba(124, 58, 237, 0.17), transparent 30%), radial-gradient(circle at 18% 76%, rgba(236, 72, 153, 0.07), transparent 28%), radial-gradient(circle at 82% 86%, rgba(37, 99, 235, 0.08), transparent 34%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed -left-40 -top-40 z-0 h-[520px] w-[520px] rounded-full bg-blue-600/10 blur-[160px] md:h-[760px] md:w-[760px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed -right-40 top-24 z-0 h-[500px] w-[500px] rounded-full bg-violet-600/18 blur-[160px] md:h-[720px] md:w-[720px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed -bottom-44 left-1/4 z-0 h-[520px] w-[520px] rounded-full bg-pink-500/8 blur-[170px] md:h-[760px] md:w-[760px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.16]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(255,255,255,0.38) 0 0.65px, transparent 1px), radial-gradient(circle, rgba(167,139,250,0.28) 0 0.55px, transparent 1px), radial-gradient(circle, rgba(147,197,253,0.24) 0 0.55px, transparent 1px)",
+          backgroundSize: "150px 150px, 230px 230px, 310px 310px",
+          backgroundPosition: "18px 34px, 92px 118px, 170px 56px",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(3,4,9,0.12) 0%, rgba(3,4,9,0.34) 100%), radial-gradient(ellipse at center, transparent 0%, rgba(3,4,9,0.42) 78%)",
+        }}
+      />
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <div
   className="relative overflow-hidden rounded-[28px] md:rounded-[40px] border border-[#1f1f1f] bg-gradient-to-br from-[#0f2b16] via-[#090909] to-[#050505] p-6 sm:p-8 md:p-16 mb-10 md:mb-14"
 >
@@ -1039,27 +1085,39 @@ hover:scale-105
             </div>
           </div>
 
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+          <div className="relative min-w-0">
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-12 bg-gradient-to-r from-[#030409] via-[#030409]/75 to-transparent md:block" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-12 bg-gradient-to-l from-[#030409] via-[#030409]/75 to-transparent md:block" />
+
+            <div
+              className="college-card-scroll flex snap-x gap-6 overflow-x-auto pb-4 md:gap-8 xl:gap-10"
+              onWheel={(event) => {
+                if (!event.shiftKey) return
+                event.currentTarget.scrollLeft += event.deltaY
+              }}
+            >
               {filteredColleges.map((college) => (
-                <CollegeCard
+                <div
                   key={college.id}
-                  id={college.id}
-                  name={college.name}
-                  image={college.image}
-                  location={college.location}
-                  fees={String(college.fees)}
-                  avgPackage={college.avgPackage}
-                  rating={String(college.rating)}
-                  nirfRank={college.nirfRank}
-                 
-                  isCompared={
+                  className="w-[min(82vw,360px)] shrink-0 snap-start md:w-[340px] xl:w-[360px]"
+                >
+                  <CollegeCard
+                    id={college.id}
+                    name={college.name}
+                    image={college.image}
+                    location={college.location}
+                    fees={String(college.fees)}
+                    avgPackage={college.avgPackage}
+                    rating={String(college.rating)}
+                    nirfRank={college.nirfRank}
+                    isCompared={
   compareColleges.some(
     (item) => item.id === college.id
   )
 }
- onCompare={() => handleCompare(college)}
-                />
+                    onCompare={() => handleCompare(college)}
+                  />
+                </div>
               ))}
             </div>
           </div>

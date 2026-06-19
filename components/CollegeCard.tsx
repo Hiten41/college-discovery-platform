@@ -101,7 +101,7 @@ const saveCollege = async () => {
 
   return (
 
-    <div className="group relative bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-[#101010] rounded-[32px] overflow-hidden border border-[#2a2a2a] hover:border-green-500/40 transition duration-500 hover:-translate-y-3 hover:shadow-[0_25px_80px_rgba(0,0,0,0.7)]">
+    <div className="group relative flex h-full flex-col bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-[#101010] rounded-[32px] overflow-hidden border border-[#2a2a2a] hover:border-green-500/40 transition duration-500 hover:-translate-y-3 hover:shadow-[0_25px_80px_rgba(0,0,0,0.7)]">
 
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-700 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5" />
 
@@ -111,13 +111,13 @@ const saveCollege = async () => {
   src={props.image}
   alt={props.name}
  
-  className="h-64 w-full object-cover transition duration-[1200ms] group-hover:scale-110"
+  className="h-52 w-full object-cover transition duration-[1200ms] group-hover:scale-110"
 />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-black/20 to-transparent" />
 
-        <div className="absolute top-5 left-5">
+        <div className="absolute top-4 left-4">
 
-          <div className="bg-black/60 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-full text-sm font-bold text-white">
+          <div className="bg-black/60 backdrop-blur-xl border border-white/10 px-3.5 py-1.5 rounded-full text-xs font-bold text-white">
 
             NIRF #{props.nirfRank}
 
@@ -125,9 +125,9 @@ const saveCollege = async () => {
 
         </div>
 
-        <div className="absolute top-5 right-5">
+        <div className="absolute top-4 right-4">
 
-          <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-black px-4 py-2 rounded-full text-sm font-black shadow-lg shadow-green-500/20">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-black px-3.5 py-1.5 rounded-full text-xs font-black shadow-lg shadow-green-500/20">
 
             {props.rating}
 
@@ -137,30 +137,30 @@ const saveCollege = async () => {
 
       </div>
 
-      <div className="relative p-8">
+      <div className="relative flex flex-1 flex-col p-6">
 
-        <div className="mb-6">
+        <div className="mb-4 min-h-[88px]">
 
-         <h2 className="text-[1.8rem] font-extrabold tracking-tight text-white mb-2 transition duration-300">
+         <h2 className="line-clamp-2 text-[1.45rem] font-extrabold tracking-tight text-white mb-2 leading-tight transition duration-300">
             {props.name}
 
           </h2>
 
-         <p className="text-zinc-500 text-sm uppercase tracking-wider font-semibold">
+         <p className="line-clamp-1 text-zinc-500 text-sm uppercase tracking-wider font-semibold">
             {props.location}
           </p>
 
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-2 gap-3 mb-4">
 
-     <div className="bg-[#171717] border border-[#262626] rounded-2xl p-4">
+     <div className="bg-[#171717] border border-[#262626] rounded-2xl p-3.5">
 
-            <p className="text-gray-500 text-sm mb-2">
+            <p className="text-gray-500 text-xs mb-1.5">
               Annual Fees
             </p>
 
-        <h3 className="text-green-300 text-xl font-bold tracking-tight">
+        <h3 className="text-green-300 text-lg font-bold tracking-tight">
 
               {formatFees(props.fees)}
 
@@ -168,13 +168,13 @@ const saveCollege = async () => {
 
           </div>
 
-         <div className="bg-[#171717] border border-[#262626] rounded-2xl p-4">
+         <div className="bg-[#171717] border border-[#262626] rounded-2xl p-3.5">
 
-            <p className="text-gray-500 text-sm mb-2">
+            <p className="text-gray-500 text-xs mb-1.5">
               Avg Package
             </p>
 
-            <h3 className="text-green-400 text-2xl font-black">
+            <h3 className="text-green-400 text-xl font-black">
 
               {props.avgPackage}
 
@@ -186,24 +186,24 @@ const saveCollege = async () => {
 
        
 
-        <div className="space-y-3">
+        <div className="mt-auto space-y-2.5">
 
          <button
   id={`save-${props.id}`}
   onClick={saveCollege}
-  className="w-full py-3 rounded-2xl border border-[#2a2a2a] text-white hover:text-green-400 hover:border-green-500/50 transition"
+  className="w-full py-2.5 rounded-2xl border border-[#2a2a2a] text-sm font-semibold text-white hover:text-green-400 hover:border-green-500/50 transition"
 >
   Save College
 </button>
 
-          <div className="flex gap-4">
+          <div className="flex gap-3">
 
             <Link
               href={`/college/${props.id}`}
               className="flex-1"
             >
 
-              <button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black py-4 rounded-2xl transition duration-300 hover:scale-105 shadow-lg shadow-green-500/20">
+              <button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black py-3 rounded-2xl transition duration-300 hover:scale-105 shadow-lg shadow-green-500/20">
 
                 View Details
 
@@ -213,7 +213,7 @@ const saveCollege = async () => {
 
            <button
   onClick={props.onCompare}
-  className={`px-6 rounded-2xl font-bold transition duration-300 hover:scale-105 border ${
+  className={`px-5 rounded-2xl text-sm font-bold transition duration-300 hover:scale-105 border ${
     props.isCompared
       ? "bg-green-500 text-black border-green-500"
       : "bg-[#232323] hover:bg-[#2d2d2d] border-[#333] text-white"

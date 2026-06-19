@@ -1,3 +1,5 @@
+import type { UnifiedCollege } from "@/lib/collegeSource";
+
 export type QueryType = "DATABASE_QUERY" | "GENERAL_QUERY" | "HYBRID_QUERY";
 
 export type QueryOperation =
@@ -18,18 +20,8 @@ export type ChatHistoryMessage = {
   content: string;
 };
 
-export type CollegeRecord = {
-  name: string;
-  location: string;
-  state: string | null;
-  fees: number | null;
-  avgPackage: string | null;
-  highestPackage: string | null;
-  nirfRank: number | null;
-  rating: number | null;
-  ownership: string | null;
-  examsAccepted: string | null;
-  description: string;
+export type CollegeRecord = UnifiedCollege & {
+  description: string | null;
 };
 
 export type QueryClassification = {

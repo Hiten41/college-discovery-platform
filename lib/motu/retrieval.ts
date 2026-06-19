@@ -1,20 +1,6 @@
-import { prisma } from "@/lib/prisma";
+import { getMotuColleges } from "@/lib/collegeSource";
 import { normalizeText } from "@/lib/motu/classifier";
 import type { CollegeRecord } from "@/lib/motu/types";
-
-const collegeSelect = {
-  name: true,
-  location: true,
-  state: true,
-  fees: true,
-  avgPackage: true,
-  highestPackage: true,
-  nirfRank: true,
-  rating: true,
-  ownership: true,
-  examsAccepted: true,
-  description: true,
-} as const;
 
 export function packageToLpa(value: string | null): number | null {
   if (!value) return null;
@@ -25,17 +11,11 @@ export function packageToLpa(value: string | null): number | null {
 }
 
 export async function getAllColleges(): Promise<CollegeRecord[]> {
-  return prisma.college.findMany({
-    select: collegeSelect,
-    orderBy: [{ nirfRank: "asc" }, { rating: "desc" }, { name: "asc" }],
-  });
+  return getMotuColleges();
 }
 
 export async function getCollegeByName(name: string): Promise<CollegeRecord | null> {
-  const colleges = await prisma.college.findMany({
-    where: { name: { contains: name.trim(), mode: "insensitive" } },
-    select: collegeSelect,
-  });
+  const colleges = await getAllColleges();
   const normalizedName = normalizeText(name);
   return (
     colleges.find((college) => normalizeText(college.name) === normalizedName) ??
@@ -56,11 +36,14 @@ export async function getTopCollegesByPackage(limit = 10): Promise<CollegeRecord
 }
 
 export async function getCollegesUnderBudget(budget: number): Promise<CollegeRecord[]> {
-  return prisma.college.findMany({
-    where: { fees: { lte: budget } },
-    select: collegeSelect,
-    orderBy: [{ nirfRank: "asc" }, { rating: "desc" }, { fees: "asc" }],
-  });
+  return (await getAllColleges())
+    .filter((college) => college.fees !== null && college.fees <= budget)
+    .sort(
+      (a, b) =>
+        (a.nirfRank ?? Number.POSITIVE_INFINITY) - (b.nirfRank ?? Number.POSITIVE_INFINITY) ||
+        (b.rating ?? 0) - (a.rating ?? 0) ||
+        (a.fees ?? Number.POSITIVE_INFINITY) - (b.fees ?? Number.POSITIVE_INFINITY),
+    );
 }
 
 export async function compareColleges(names: string[]): Promise<{
@@ -89,4 +72,3 @@ export function parseComparisonNames(message: string): string[] {
     .filter(Boolean)
     .slice(0, 4);
 }
-

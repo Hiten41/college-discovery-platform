@@ -15,10 +15,13 @@ function examMatch(
   college: RankPredictorCollege,
   exam: Exam,
 ): "confirmed" | "verify" | "incompatible" {
-  if (!college.examsAccepted?.trim()) return "verify";
-  const accepted = normalizeText(college.examsAccepted);
   const expected = normalizeText(exam);
-  return accepted.includes(expected) ? "confirmed" : "incompatible";
+  if (college.examsAccepted.length === 0) return "verify";
+  return college.examsAccepted.some((acceptedExam) =>
+    normalizeText(acceptedExam).includes(expected)
+  )
+    ? "confirmed"
+    : "incompatible";
 }
 
 export function predictColleges(

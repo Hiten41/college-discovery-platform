@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { normalizeStoredCompareColleges } from "@/lib/compareStorage";
 
 import {
   ResponsiveContainer,
@@ -18,11 +19,11 @@ interface College {
   location: string
   fees: number
   avgPackage: string
-  rating: string
+  rating: number
   nirfRank: number
-   ownership: string
-  examsAccepted: string
-  highestPackage: string
+   ownership: string | null
+  examsAccepted: string[]
+  highestPackage: string | null
 }
 export default function ComparePage() {
 const [colleges] = useState<College[]>(() => {
@@ -31,8 +32,10 @@ const [colleges] = useState<College[]>(() => {
     return [];
   }
 
-  return JSON.parse(
-    localStorage.getItem("compareColleges") || "[]"
+  return normalizeStoredCompareColleges(
+    JSON.parse(
+      localStorage.getItem("compareColleges") || "[]"
+    )
   );
 
 });
@@ -135,7 +138,7 @@ const [colleges] = useState<College[]>(() => {
       Comparison Dashboard
     </p>
 
-<h1 className="text-7xl md:text-8xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-blue-300 bg-clip-text text-transparent mb-6">
+<h1 className="text-7xl md:text-8xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-green-300 bg-clip-text text-transparent mb-6">
       Detailed Comparison
     </h1>
 
@@ -178,7 +181,7 @@ const [colleges] = useState<College[]>(() => {
                       Rank
                     </span>
 
-                    <span className="text-blue-400 font-semibold">
+                    <span className="text-green-400 font-semibold">
                       #{college.nirfRank}
                     </span>
                   </div>
@@ -230,7 +233,7 @@ const [colleges] = useState<College[]>(() => {
               Best Rank
             </p>
 
-            <h3 className="text-2xl font-black text-blue-400">
+            <h3 className="text-2xl font-black text-green-400">
               {getBestRank()?.name}
             </h3>
 
@@ -370,7 +373,7 @@ const [colleges] = useState<College[]>(() => {
 
                   <td
                     key={college.id}
-                    className="p-6 text-blue-400 font-bold"
+                    className="p-6 text-green-400 font-bold"
                   >
                     #{college.nirfRank}
                   </td>
@@ -409,7 +412,7 @@ const [colleges] = useState<College[]>(() => {
                     key={college.id}
                     className="p-6 text-white"
                   >
-                    {college.examsAccepted || "-"}
+                    {college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "-"}
                   </td>
 
                 ))}

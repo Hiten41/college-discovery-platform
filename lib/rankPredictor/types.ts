@@ -35,7 +35,7 @@ export type RankPredictorCollege = {
   highestPackage: string | null;
   nirfRank: number | null;
   ownership: string | null;
-  examsAccepted: string | null;
+  examsAccepted: string[];
 };
 
 export type ScoreFactor = {

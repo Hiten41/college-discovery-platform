@@ -1,28 +1,52 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import { useMemo, useSyncExternalStore } from "react"
 
-export default function Navbar() {
-
-
- interface User {
+interface User {
   id: string
   name: string
   email: string
 }
 
-const [user] = useState<User | null>(() => {
+const emptyUserSnapshot = "null"
 
-  if (typeof window === "undefined") {
+function subscribeToUserStorage(onStoreChange: () => void) {
+  window.addEventListener("storage", onStoreChange)
+  return () => window.removeEventListener("storage", onStoreChange)
+}
+
+function getStoredUserSnapshot(): string {
+  return localStorage.getItem("user") || emptyUserSnapshot
+}
+
+function getServerUserSnapshot(): string {
+  return emptyUserSnapshot
+}
+
+function parseUserSnapshot(snapshot: string): User | null {
+  try {
+    return JSON.parse(snapshot)
+  } catch {
     return null
   }
+}
 
-  return JSON.parse(
-    localStorage.getItem("user") || "null"
-  )
+export default function Navbar() {
 
-})
+
+const userSnapshot = useSyncExternalStore(
+  subscribeToUserStorage,
+  getStoredUserSnapshot,
+  getServerUserSnapshot
+)
+
+const user = useMemo(
+  () => parseUserSnapshot(userSnapshot),
+  [userSnapshot]
+)
+
 
   const handleLogout = () => {
 
@@ -47,9 +71,14 @@ const [user] = useState<User | null>(() => {
 
             <div className="absolute inset-0 bg-green-500 blur-xl opacity-40 rounded-2xl" />
 
-            <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-black text-xl font-black">
-              C
-            </div>
+            <Image
+              src="/images/logo.png"
+              alt="CollegeHub logo"
+              width={44}
+              height={44}
+              priority
+              className="relative h-11 w-11 rounded-2xl object-contain"
+            />
 
           </div>
 
@@ -75,17 +104,6 @@ const [user] = useState<User | null>(() => {
           >
             Home
           </Link>
-
-        <button
-  onClick={() =>
-    document
-      .getElementById("colleges")
-      ?.scrollIntoView({ behavior: "smooth" })
-  }
-  className="text-gray-400 hover:text-white transition duration-300 font-medium"
->
-  Top Colleges
-</button>
 
 <button
   onClick={() =>
@@ -127,7 +145,7 @@ const [user] = useState<User | null>(() => {
 
               <button
                 onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-400 text-white font-bold px-6 py-3 rounded-2xl transition duration-300"
+                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-bold px-6 py-3 rounded-2xl transition duration-300 shadow-[0_10px_30px_rgba(34,197,94,0.25)]"
               >
                 Logout
               </button>

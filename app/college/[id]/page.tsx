@@ -15,7 +15,7 @@ interface College {
   rating: string
   nirfRank: number
   ownership: string
-  examsAccepted: string
+  examsAccepted: string[]
   establishedYear: number
     website: string
   highestPackage: string
@@ -184,7 +184,7 @@ if (loading) {
   </span>
 
   <span className="px-4 py-2 rounded-full bg-[#202020] border border-[#2a2a2a] text-white">
-    {college.examsAccepted}
+    {college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}
   </span>
 
   <span className="px-4 py-2 rounded-full bg-[#202020] border border-[#2a2a2a] text-white">
@@ -338,7 +338,7 @@ if (loading) {
       </p>
 
       <p className="text-xl font-bold text-white">
-        {college.examsAccepted || "N/A"}
+        {college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}
       </p>
     </div>
 

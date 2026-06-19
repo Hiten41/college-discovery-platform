@@ -31,7 +31,7 @@ const colleges: RankPredictorCollege[] = [
     highestPackage: "52 LPA",
     nirfRank: 9,
     ownership: "Government",
-    examsAccepted: "JEE Main",
+    examsAccepted: ["JEE Main"],
   },
   {
     name: "IIT Madras",
@@ -42,7 +42,7 @@ const colleges: RankPredictorCollege[] = [
     highestPackage: "1.3 Cr",
     nirfRank: 1,
     ownership: "Government",
-    examsAccepted: "JEE Advanced",
+    examsAccepted: ["JEE Advanced"],
   },
   {
     name: "College With Unverified Exam",
@@ -53,7 +53,7 @@ const colleges: RankPredictorCollege[] = [
     highestPackage: null,
     nirfRank: 120,
     ownership: null,
-    examsAccepted: null,
+    examsAccepted: [],
   },
 ];
 
@@ -66,7 +66,7 @@ const iitDelhi: RankPredictorCollege = {
   highestPackage: "2 Cr",
   nirfRank: 2,
   ownership: "Government",
-  examsAccepted: "JEE Advanced",
+  examsAccepted: ["JEE Advanced"],
 };
 
 test("score bands use the documented boundaries", () => {

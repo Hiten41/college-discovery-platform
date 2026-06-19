@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   FormEvent,
   Fragment,
@@ -9,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Bot, Loader2, Send, Sparkles, X } from "lucide-react";
+import { Loader2, Send, Sparkles, X } from "lucide-react";
 import MotuButton from "@/components/MotuButton";
 
 type ChatRole = "assistant" | "user";
@@ -250,8 +251,19 @@ export default function MotuChat() {
             <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-green-500/15 blur-3xl" />
             <div className="relative flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-black shadow-[0_0_30px_rgba(34,197,94,0.35)]">
-                  <Bot className="h-7 w-7" strokeWidth={2.5} />
+                <div
+                  className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-cover bg-center shadow-[0_0_30px_rgba(34,197,94,0.35)] ring-1 ring-green-400/25"
+                  style={{ backgroundImage: "url('/images/motu.png')" }}
+                >
+                  <Image
+                    src="/images/motu.png"
+                    alt="Motu AI Counselor"
+                    fill
+                    sizes="48px"
+                    className="rounded-full object-cover object-center"
+                    priority
+                    unoptimized
+                  />
                 </div>
                 <div>
                   <h2 className="text-xl font-black text-white">Ask Motu</h2>

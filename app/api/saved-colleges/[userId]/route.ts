@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { normalizeCollege } from "@/lib/collegeSource";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -20,7 +21,10 @@ export async function GET(
       });
 
     return NextResponse.json(
-      savedColleges
+      savedColleges.map((savedCollege) => ({
+        ...savedCollege,
+        college: normalizeCollege(savedCollege.college),
+      }))
     );
 
   } catch (error) {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAllColleges } from "@/lib/motu/retrieval";
+import { getRankPredictorColleges } from "@/lib/collegeSource";
 import { predictColleges } from "@/lib/rankPredictor/predictor";
 import {
   BRANCHES,
@@ -56,7 +56,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const colleges = await getAllColleges();
+    const colleges = await getRankPredictorColleges();
+
     return NextResponse.json(predictColleges(colleges, input));
   } catch (error) {
     console.error("RANK PREDICTOR ERROR:", error);
@@ -66,4 +67,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

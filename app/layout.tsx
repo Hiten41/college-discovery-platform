@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import GalaxyBackground from "@/components/GalaxyBackground";
 import MotuChat from "@/components/MotuChat";
 
 export const metadata: Metadata = {
   title: "CollegeHub | Compare Colleges",
   description:
     "AI-powered college discovery platform for comparing colleges, placements, rankings and admission chances.",
+  icons: {
+    icon: "/images/logo.png",
+    shortcut: "/images/logo.png",
+    apple: "/images/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -16,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
+        <GalaxyBackground />
         {children}
         <MotuChat />
       </body>

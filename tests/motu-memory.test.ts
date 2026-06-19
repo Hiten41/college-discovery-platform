@@ -112,6 +112,7 @@ test("resolved comparison records become the canonical active context", () => {
 test("every answer in a multi-turn comparison uses the active colleges", () => {
   const colleges: CollegeRecord[] = [
     {
+      id: "test-iit-delhi",
       name: "IIT Delhi",
       location: "New Delhi",
       state: "Delhi",
@@ -121,10 +122,15 @@ test("every answer in a multi-turn comparison uses the active colleges", () => {
       nirfRank: 2,
       rating: 4.8,
       ownership: "Government",
-      examsAccepted: "JEE Advanced",
+      examsAccepted: ["JEE Advanced"],
       description: "",
+      website: null,
+      image: null,
+      accreditation: null,
+      establishedYear: null,
     },
     {
+      id: "test-nit-trichy",
       name: "NIT Trichy",
       location: "Tiruchirappalli",
       state: "Tamil Nadu",
@@ -134,8 +140,12 @@ test("every answer in a multi-turn comparison uses the active colleges", () => {
       nirfRank: 9,
       rating: 4.6,
       ownership: "Government",
-      examsAccepted: "JEE Main",
+      examsAccepted: ["JEE Main"],
       description: "",
+      website: null,
+      image: null,
+      accreditation: null,
+      establishedYear: null,
     },
   ];
   const result: RetrievalResult = {

@@ -1,9 +1,11 @@
 "use client"
 import { motion } from "framer-motion"
+import type { KeyboardEvent } from "react"
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Navbar from "../components/Navbar"
 import CollegeCard from "../components/CollegeCard"
+import { normalizeStoredCompareColleges } from "@/lib/compareStorage"
 type College = {
   id: string
 
@@ -21,7 +23,7 @@ highestPackage?: string | null
 
   ownership: string | null
 
-  examsAccepted: string | null
+  examsAccepted: string[]
 
   description: string | null
 
@@ -78,11 +80,13 @@ const [maxRank, setMaxRank] = useState(200)
   const [compareColleges, setCompareColleges] = useState<College[]>([])
 useEffect(() => {
   const loadCompareColleges = () => {
-    const stored = JSON.parse(
-      localStorage.getItem("compareColleges") || "[]"
+    const stored = normalizeStoredCompareColleges(
+      JSON.parse(
+        localStorage.getItem("compareColleges") || "[]"
+      )
     );
 
-    setCompareColleges(stored);
+    setCompareColleges(stored as College[]);
   };
 
   loadCompareColleges();
@@ -288,7 +292,7 @@ setCompareColleges(updated)
 
 localStorage.setItem(
   "compareColleges",
-  JSON.stringify(updated)
+  JSON.stringify(normalizeStoredCompareColleges(updated))
 )
   }
 
@@ -335,6 +339,25 @@ setMaxRank(200)
       setColleges(initialColleges)
       setLoading(false)
     }
+  }
+
+  function scrollToCollegeResults() {
+    document
+      .getElementById("colleges")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
+  function handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== "Enter") return
+
+    event.preventDefault()
+    setDebouncedSearch(searchTerm)
+    requestAnimationFrame(scrollToCollegeResults)
+  }
+
+  function handleExploreColleges() {
+    setDebouncedSearch(searchTerm)
+    scrollToCollegeResults()
   }
 
   const filteredColleges = Array.isArray(colleges)
@@ -413,17 +436,14 @@ min-h-[180px]
   placeholder="Search colleges..."
   value={searchTerm}
   onChange={(e) => setSearchTerm(e.target.value)}
+  onKeyDown={handleSearchKeyDown}
   className="w-full bg-[#1b1b1b] border border-[#2a2a2a] text-white px-6 py-5 rounded-2xl mb-6"
 />
 
       <div className="flex flex-wrap gap-4">
 
         <button
-          onClick={() =>
-            document
-              .getElementById("colleges")
-              ?.scrollIntoView({ behavior: "smooth" })
-          }
+          onClick={handleExploreColleges}
           className="px-6 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-black font-black"
         >
           Explore Colleges
@@ -588,10 +608,6 @@ max-w-2xl
       Up to 3 colleges
     </span>
 
-    <button className="text-green-300 font-semibold transition-all duration-300 group-hover:translate-x-1">
-      Explore →
-    </button>
-
   </div>
 
 </div>
@@ -625,10 +641,6 @@ max-w-2xl
     <span className="text-zinc-400 text-sm font-medium">
       Placement Data
     </span>
-
-    <button className="text-green-300 font-semibold transition-all duration-300 group-hover:translate-x-1">
-      Explore →
-    </button>
 
   </div>
 
@@ -664,10 +676,6 @@ max-w-2xl
       Official Data
     </span>
 
-    <button className="text-green-300 font-semibold transition-all duration-300 group-hover:translate-x-1">
-      Explore →
-    </button>
-
   </div>
 
 </div>
@@ -701,10 +709,6 @@ max-w-2xl
     <span className="text-zinc-400 text-sm font-medium">
       Fast Results
     </span>
-
-    <button className="text-green-300 font-semibold transition-all duration-300 group-hover:translate-x-1">
-      Explore →
-    </button>
 
   </div>
 
@@ -740,7 +744,7 @@ max-w-2xl
     onClick={() => {
       localStorage.setItem(
         "compareColleges",
-        JSON.stringify(compareColleges)
+        JSON.stringify(normalizeStoredCompareColleges(compareColleges))
       )
 
      router.push("/compare")
@@ -831,7 +835,7 @@ max-w-2xl
   </span>
 
   <span className="text-white font-bold">
-    {college.examsAccepted}
+    {college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}
   </span>
 </div>
 <div className="flex items-center justify-between border-b border-[#2a2a2a] pb-3">
@@ -859,17 +863,17 @@ max-w-2xl
 px-6 py-3
 rounded-xl
 bg-gradient-to-r
-from-blue-700
-to-blue-900
-hover:from-blue-600
-hover:to-blue-800
-text-white
+from-green-500
+to-emerald-600
+hover:from-green-400
+hover:to-emerald-500
+text-black
 font-semibold
 text-base
 transition-all
 duration-300
 shadow-lg
-shadow-blue-900/40
+shadow-green-900/40
 hover:scale-105
 "
   >
@@ -890,7 +894,7 @@ hover:scale-105
 </div>
         {/* CARDS */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10">
+        <div id="colleges" className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10 scroll-mt-28">
           <div className="h-fit sticky top-28">
           <div className="relative overflow-hidden rounded-[32px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8">
             <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />

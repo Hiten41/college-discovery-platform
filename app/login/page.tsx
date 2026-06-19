@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
 
@@ -61,13 +62,27 @@ export default function LoginPage() {
 
   return (
 
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-6 py-12">
+      <div className="absolute left-1/2 top-16 h-72 w-72 -translate-x-1/2 rounded-full bg-green-500/20 blur-[110px]" />
+      <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-emerald-500/10 blur-[120px]" />
 
-      <div className="bg-[#181818] p-8 rounded-3xl w-full max-w-md">
+      <div className="relative w-full max-w-md overflow-hidden rounded-[32px] border border-white/10 bg-[#101010]/90 p-8 shadow-[0_30px_100px_rgba(0,0,0,0.65)] backdrop-blur-xl">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green-500 via-emerald-300 to-green-500" />
 
-        <h1 className="text-white text-4xl font-black mb-8">
-          Login
-        </h1>
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 text-2xl font-black text-black shadow-[0_0_35px_rgba(34,197,94,0.35)]">
+            C
+          </div>
+          <p className="mb-2 text-xs font-black uppercase tracking-[0.28em] text-green-300">
+            Welcome back
+          </p>
+          <h1 className="text-4xl font-black text-white">
+            Login to CollegeHub
+          </h1>
+          <p className="mt-3 text-sm text-zinc-400">
+            Continue discovering, saving, and comparing colleges.
+          </p>
+        </div>
 
         <input
           type="email"
@@ -77,7 +92,7 @@ export default function LoginPage() {
           onChange={(e) =>
             setEmail(e.target.value)
           }
-          className="w-full mb-4 p-4 rounded-xl bg-[#222] text-white"
+          className="mb-4 w-full rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-white outline-none transition placeholder:text-zinc-500 focus:border-green-400/50 focus:bg-green-500/5"
         />
 
         <input
@@ -88,16 +103,23 @@ export default function LoginPage() {
           onChange={(e) =>
             setPassword(e.target.value)
           }
-          className="w-full mb-6 p-4 rounded-xl bg-[#222] text-white"
+          className="mb-6 w-full rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-white outline-none transition placeholder:text-zinc-500 focus:border-green-400/50 focus:bg-green-500/5"
         />
 
         <button
           onClick={handleLogin}
           disabled={loading}
-          className="w-full bg-green-500 text-black font-black py-4 rounded-xl disabled:opacity-50"
+          className="w-full rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 py-4 font-black text-black shadow-[0_18px_45px_rgba(34,197,94,0.28)] transition hover:from-green-400 hover:to-emerald-400 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? "Logging In..." : "Login"}
         </button>
+
+        <p className="mt-6 text-center text-sm text-zinc-400">
+          New to CollegeHub?{" "}
+          <Link href="/signup" className="font-bold text-green-300 transition hover:text-green-200">
+            Create an account
+          </Link>
+        </p>
 
       </div>
 

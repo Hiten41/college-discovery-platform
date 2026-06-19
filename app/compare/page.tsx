@@ -120,9 +120,9 @@ const [colleges] = useState<College[]>(() => {
   }}
 />
 </div>
-     <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
+     <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
 
-      <div className="relative h-[420px] rounded-[40px] overflow-hidden mb-14">
+      <div className="relative h-[360px] md:h-[420px] rounded-[28px] md:rounded-[40px] overflow-hidden mb-10 md:mb-14">
 
   <img
     src="/images/hacker.jpg"
@@ -132,17 +132,17 @@ const [colleges] = useState<College[]>(() => {
 
 <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/50" />
 
-  <div className="relative z-10 h-full flex flex-col justify-center px-12">
+  <div className="relative z-10 h-full flex flex-col justify-center px-5 sm:px-8 md:px-12">
 
-    <p className="text-violet-400 font-bold text-lg uppercase tracking-[0.3em] mb-4">
+    <p className="text-violet-400 font-bold text-xs sm:text-sm md:text-lg uppercase tracking-[0.18em] md:tracking-[0.3em] mb-4">
       Comparison Dashboard
     </p>
 
-<h1 className="text-7xl md:text-8xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-green-300 bg-clip-text text-transparent mb-6">
+<h1 className="text-4xl sm:text-5xl md:text-8xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-200 to-green-300 bg-clip-text text-transparent mb-6">
       Detailed Comparison
     </h1>
 
-    <p className="text-zinc-300 text-2xl max-w-3xl leading-relaxed">
+    <p className="text-zinc-300 text-base sm:text-lg md:text-2xl max-w-3xl leading-relaxed">
       Compare rankings, placements, fees and admissions side-by-side with advanced analytics.
     </p>
 
@@ -227,7 +227,7 @@ const [colleges] = useState<College[]>(() => {
         </div>
                 <div className="grid md:grid-cols-3 gap-6 mb-12">
 
-          <div className="bg-[#111111] border border-[#222222] rounded-3xl p-6">
+          <div className="bg-[#111111] border border-[#222222] rounded-3xl p-4 md:p-6 overflow-x-auto">
 
             <p className="text-zinc-500 mb-3">
               Best Rank
@@ -279,7 +279,7 @@ const [colleges] = useState<College[]>(() => {
 
         <div className="overflow-x-auto rounded-3xl border border-[#222222] bg-[#111111]">
 
-    <table className="w-full text-left text-xl">
+    <table className="w-full min-w-[760px] text-left text-sm md:text-xl">
 
             <thead>
 
@@ -483,7 +483,7 @@ const [colleges] = useState<College[]>(() => {
               Average Package Comparison
             </h3>
 
-            <div className="h-[320px]">
+            <div className="h-[320px] min-w-[420px]">
 
             <ResponsiveContainer width="100%" height={300}>
 
@@ -529,13 +529,13 @@ const [colleges] = useState<College[]>(() => {
 
           </div>
 
-          <div className="bg-[#111111] border border-[#222222] rounded-3xl p-6">
+          <div className="bg-[#111111] border border-[#222222] rounded-3xl p-4 md:p-6 overflow-x-auto">
 
             <h3 className="text-xl font-bold text-white mb-6">
               Annual Fees Comparison
             </h3>
 
-            <div className="h-[320px]">
+            <div className="h-[320px] min-w-[420px]">
 
             <ResponsiveContainer width="100%" height={300}>
 

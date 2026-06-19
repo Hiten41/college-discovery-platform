@@ -157,7 +157,7 @@ export default function RankPredictorPage() {
                   className="w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-3.5 text-white outline-none transition focus:border-green-400/60 focus:ring-4 focus:ring-green-400/10"
                 />
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid gap-3 min-[380px]:grid-cols-2">
                 <SelectField label="Category" value={form.category} options={CATEGORIES} onChange={(category) => setForm({ ...form, category: category as RankPredictorInput["category"] })} />
                 <SelectField label="Gender" value={form.gender} options={GENDERS} onChange={(gender) => setForm({ ...form, gender: gender as RankPredictorInput["gender"] })} />
               </div>

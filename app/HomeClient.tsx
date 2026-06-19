@@ -393,9 +393,9 @@ setMaxRank(200)
     <div className="min-h-screen bg-[#0d0d0d]">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
       <div
-  className="relative overflow-hidden rounded-[40px] border border-[#1f1f1f] bg-gradient-to-br from-[#0f2b16] via-[#090909] to-[#050505] p-10 md:p-16 mb-14"
+  className="relative overflow-hidden rounded-[28px] md:rounded-[40px] border border-[#1f1f1f] bg-gradient-to-br from-[#0f2b16] via-[#090909] to-[#050505] p-6 sm:p-8 md:p-16 mb-10 md:mb-14"
 >
  <>
   <div className="absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full bg-green-500/20 blur-[140px]" />
@@ -410,7 +410,8 @@ setMaxRank(200)
       </div>
 
    <h1 className="
-text-5xl
+text-4xl
+sm:text-5xl
 md:text-7xl
 font-black
 leading-tight
@@ -420,12 +421,14 @@ via-cyan-200
 to-blue-500
 bg-clip-text
 text-transparent
-min-h-[180px]
+min-h-[132px]
+sm:min-h-[150px]
+md:min-h-[180px]
 ">
   {displayText}
 </h1>
 
-    <p className="text-zinc-200 text-xl md:text-2xl mb-8 max-w-2xl leading-relaxed">
+    <p className="text-zinc-200 text-base sm:text-xl md:text-2xl mb-8 max-w-2xl leading-relaxed">
   {heroSlides[textIndex].subtitle}
 </p>
 
@@ -437,14 +440,14 @@ min-h-[180px]
   value={searchTerm}
   onChange={(e) => setSearchTerm(e.target.value)}
   onKeyDown={handleSearchKeyDown}
-  className="w-full bg-[#1b1b1b] border border-[#2a2a2a] text-white px-6 py-5 rounded-2xl mb-6"
+  className="w-full bg-[#1b1b1b] border border-[#2a2a2a] text-white px-5 sm:px-6 py-4 sm:py-5 rounded-2xl mb-6"
 />
 
       <div className="flex flex-wrap gap-4">
 
         <button
           onClick={handleExploreColleges}
-          className="px-6 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-black font-black"
+          className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-black font-black"
         >
           Explore Colleges
         </button>
@@ -455,7 +458,7 @@ min-h-[180px]
               .getElementById("compare")
               ?.scrollIntoView({ behavior: "smooth" })
           }
-          className="px-6 py-4 rounded-2xl border border-[#2a2a2a] text-white font-bold hover:border-green-500/40 transition"
+          className="w-full sm:w-auto px-6 py-4 rounded-2xl border border-[#2a2a2a] text-white font-bold hover:border-green-500/40 transition"
         >
           Compare Colleges
         </button>
@@ -573,7 +576,7 @@ min-h-[180px]
  
   <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
 
-<div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+<div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
 
   <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
 
@@ -581,7 +584,7 @@ min-h-[180px]
 
     <div>
 
-      <h3 className="text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
+      <h3 className="text-2xl md:text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
         College Comparison
       </h3>
 
@@ -612,7 +615,7 @@ max-w-2xl
 
 </div>
 
-  <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+  <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
 
   <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
 
@@ -620,7 +623,7 @@ max-w-2xl
 
     <div>
 
-      <h3 className="text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
+      <h3 className="text-2xl md:text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
         Placement Insights
       </h3>
 
@@ -646,7 +649,7 @@ max-w-2xl
 
 </div>
 
-  <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+  <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
 
   <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
 
@@ -654,7 +657,7 @@ max-w-2xl
 
     <div>
 
-      <h3 className="text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
+      <h3 className="text-2xl md:text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
         NIRF Rankings
       </h3>
 
@@ -680,7 +683,7 @@ max-w-2xl
 
 </div>
 
-    <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+    <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
 
   <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
 
@@ -688,7 +691,7 @@ max-w-2xl
 
     <div>
 
-      <h3 className="text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
+      <h3 className="text-2xl md:text-[2rem] font-extrabold tracking-[-0.03em] text-white mb-4">
         Smart Discovery
       </h3>
 
@@ -719,16 +722,16 @@ max-w-2xl
 </div>
 <div id="compare">
   {compareColleges.length > 0 && (
-    <div className="mb-16 relative overflow-hidden rounded-[36px] border border-[#2a2a2a] bg-gradient-to-br from-[#171717] via-[#121212] to-black p-8">
+    <div className="mb-16 relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-[#2a2a2a] bg-gradient-to-br from-[#171717] via-[#121212] to-black p-5 md:p-8">
 
       <div className="flex items-center justify-between mb-10">
 
         <div>
-          <h2 className="text-5xl font-black text-white mb-3">
+          <h2 className="text-3xl md:text-5xl font-black text-white mb-3">
             Compare Colleges
           </h2>
 
-          <p className="text-gray-500 text-lg">
+          <p className="text-gray-500 text-base md:text-lg">
             Side-by-side analysis of selected colleges
           </p>
         </div>
@@ -762,7 +765,7 @@ max-w-2xl
 
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
 
         {compareColleges.map((college) => (
 
@@ -895,11 +898,11 @@ hover:scale-105
         {/* CARDS */}
 
         <div id="colleges" className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10 scroll-mt-28">
-          <div className="h-fit sticky top-28">
-          <div className="relative overflow-hidden rounded-[32px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-8">
+          <div className="h-fit lg:sticky lg:top-28">
+          <div className="relative overflow-hidden rounded-[28px] md:rounded-[32px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8">
             <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
               <div className="flex items-center justify-between mb-8">
-              <h2 className="text-[2rem] font-extrabold tracking-tight text-white">
+              <h2 className="text-2xl md:text-[2rem] font-extrabold tracking-tight text-white">
   Discover
 </h2>
 

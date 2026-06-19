@@ -124,10 +124,12 @@
   body {
     @apply bg-background text-foreground;
     background: #050706;
+    overflow-x: hidden;
   }
   html {
     @apply font-sans;
     background: #050706;
+    overflow-x: hidden;
   }
 }
 

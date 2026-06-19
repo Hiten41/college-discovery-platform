@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CollegeHub
 
-## Getting Started
+A college discovery and guidance platform for Indian students — search, compare, and shortlist colleges with the help of an AI counselor and a rank-based predictor.
 
-First, run the development server:
+**Live:** [college-discovery-platform-ten-phi.vercel.app](https://college-discovery-platform-ten-phi.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## What it does
+
+**College Search & Filters**
+Search colleges by name and filter by state, fee range, rankings, and entrance exams. Results update fast without page reloads.
+
+**Side-by-Side Comparison**
+Pick up to 3 colleges and compare them on fees, NIRF ranking, average package, placement rate, and overall rating.
+
+**Ask Motu — AI Counselor**
+A conversational assistant powered by Gemini. Ask it anything college-related — it pulls from structured college data to give grounded answers and handles follow-up questions naturally.
+
+**Rank Predictor**
+Enter your entrance exam rank, budget, preferred branch, and college type. Get a categorized list of Dream, Target, and Safe colleges based on your inputs.
+
+**Saved Colleges**
+Bookmark colleges and access them from a quick-view dashboard with direct links to official websites.
+
+---
+
+## Tech Stack
+
+| Layer      | Tech                        |
+|------------|-----------------------------|
+| Frontend   | Next.js, React, TypeScript, Tailwind CSS |
+| Backend    | Next.js API Routes          |
+| ORM        | Prisma                      |
+| Database   | PostgreSQL (Neon)           |
+| AI         | Google Gemini API           |
+| Deployment | Vercel                      |
+
+---
+
+## Architecture
+
+```
+User → Next.js Frontend → API Routes → Prisma ORM → PostgreSQL
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+For AI queries:
+```
+User → Ask Motu → Gemini API → College Data Layer → Response
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Running Locally
 
-## Learn More
+```bash
+git clone https://github.com/Hiten41/college-discovery-platform
+cd college-discovery-platform
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+Set up your `.env`:
+```env
+DATABASE_URL=your_neon_postgres_url
+GEMINI_API_KEY=your_gemini_api_key
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Push the schema and seed data:
+```bash
+npx prisma db push
+npx prisma db seed
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Start the dev server:
+```bash
+npm run dev
+```
 
-## Deploy on Vercel
+Open [http://localhost:3000](http://localhost:3000).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Roadmap
+
+- [ ] Historical placement trends per college
+- [ ] Review sentiment analysis
+- [ ] OCR-based scorecard upload for rank prediction
+- [ ] Counseling round cutoff analytics
+- [ ] Alumni Q&A integration
+
+---
+
+## Author
+
+**Hiten Arora** — IIT (ISM) Dhanbad  
+[github.com/Hiten41](https://github.com/Hiten41)

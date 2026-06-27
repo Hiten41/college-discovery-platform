@@ -3,7 +3,8 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
-import { useMemo, useState, useSyncExternalStore } from "react"
+import { motion } from "framer-motion"
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react"
 
 interface User {
   id: string
@@ -36,6 +37,7 @@ function parseUserSnapshot(snapshot: string): User | null {
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   const userSnapshot = useSyncExternalStore(
     subscribeToUserStorage,
@@ -47,6 +49,15 @@ export default function Navbar() {
     () => parseUserSnapshot(userSnapshot),
     [userSnapshot]
   )
+
+  useEffect(() => {
+    const updateScrollState = () => setIsScrolled(window.scrollY > 18)
+
+    updateScrollState()
+    window.addEventListener("scroll", updateScrollState, { passive: true })
+
+    return () => window.removeEventListener("scroll", updateScrollState)
+  }, [])
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false)
 
@@ -69,8 +80,18 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-2xl bg-black/50 border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 lg:py-5 flex items-center justify-between">
+    <motion.nav
+      initial={{ y: -18, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      className={`sticky top-3 z-50 mx-3 rounded-[28px] border backdrop-blur-2xl transition-all duration-500 ${
+        isScrolled
+          ? "border-white/10 bg-black/62 shadow-[0_18px_70px_rgba(0,0,0,0.42)]"
+          : "border-white/5 bg-black/38 shadow-[0_10px_45px_rgba(0,0,0,0.24)]"
+      }`}
+    >
+      <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 lg:py-4 flex items-center justify-between">
         <Link
           href="/"
           onClick={closeMobileMenu}
@@ -139,7 +160,7 @@ export default function Navbar() {
 
               <button
                 onClick={handleLogout}
-                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-bold px-6 py-3 rounded-2xl transition duration-300 shadow-[0_10px_30px_rgba(34,197,94,0.25)]"
+                className="luxe-button bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-bold px-6 py-3 rounded-2xl shadow-[0_10px_30px_rgba(34,197,94,0.25)]"
               >
                 Logout
               </button>
@@ -155,7 +176,7 @@ export default function Navbar() {
 
               <Link
                 href="/signup"
-                className="relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black px-7 py-3 rounded-2xl transition duration-300 hover:scale-105 shadow-[0_10px_40px_rgba(34,197,94,0.35)]"
+                className="luxe-button relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black px-7 py-3 rounded-2xl shadow-[0_10px_40px_rgba(34,197,94,0.35)]"
               >
                 Get Started
               </Link>
@@ -168,7 +189,7 @@ export default function Navbar() {
           onClick={() => setIsMobileMenuOpen((value) => !value)}
           aria-expanded={isMobileMenuOpen}
           aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.04] text-white transition hover:border-green-400/40 hover:bg-green-500/10 lg:hidden"
+          className="luxe-button grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.04] text-white hover:border-green-400/40 hover:bg-green-500/10 lg:hidden"
         >
           {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -223,7 +244,7 @@ export default function Navbar() {
 
                 <button
                   onClick={handleLogout}
-                  className="w-full rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 px-5 py-3.5 text-center font-black text-black transition hover:from-green-400 hover:to-emerald-400"
+                  className="luxe-button w-full rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 px-5 py-3.5 text-center font-black text-black hover:from-green-400 hover:to-emerald-400"
                 >
                   Logout
                 </button>
@@ -250,6 +271,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   )
 }

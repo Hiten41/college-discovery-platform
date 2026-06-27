@@ -132,13 +132,13 @@ if (loading) {
 
   return (
 
-    <div className="min-h-screen bg-[#0d0d0d] text-white">
+    <div className="premium-detail-page premium-depth-root min-h-screen text-white">
 
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-6 py-10">
 
-        <div className="relative overflow-hidden rounded-[40px] border border-[#2a2a2a] mb-12">
+        <div className="luxe-surface luxe-section relative overflow-hidden rounded-[40px] mb-12">
 
           <img
             src={college.image}
@@ -199,7 +199,7 @@ if (loading) {
     onClick={() =>
       setShowApplyModal(true)
     }
-    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black px-10 py-5 rounded-2xl transition duration-300 hover:scale-105 shadow-[0_10px_40px_rgba(34,197,94,0.3)]"
+    className="luxe-button bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black px-10 py-5 rounded-2xl shadow-[0_10px_40px_rgba(34,197,94,0.3)]"
   >
     Apply Now
   </button>
@@ -207,7 +207,7 @@ if (loading) {
   <a
     href="/brochure.pdf"
     download
-    className="bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-xl px-10 py-5 rounded-2xl font-bold transition duration-300 inline-flex items-center"
+    className="luxe-button bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-xl px-10 py-5 rounded-2xl font-bold inline-flex items-center"
   >
     Download Brochure
   </a>
@@ -216,7 +216,7 @@ if (loading) {
     href={college.website || "#"}
     target="_blank"
     rel="noopener noreferrer"
-    className="bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-xl px-10 py-5 rounded-2xl font-bold transition duration-300 inline-flex items-center"
+    className="luxe-button bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-xl px-10 py-5 rounded-2xl font-bold inline-flex items-center"
   >
     Official Website
   </a>

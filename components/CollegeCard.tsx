@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import type { MouseEvent } from "react"
+import { useRef } from "react"
 interface CollegeCardProps {
   id: string
   name: string
@@ -36,7 +37,36 @@ function formatFees(fees: string | number) {
 }
 
 export default function CollegeCard(props: CollegeCardProps) {
-const [saveMessage, setSaveMessage] = useState("")
+const cardRef = useRef<HTMLDivElement | null>(null)
+
+function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+  const card = cardRef.current
+  if (!card) return
+
+  const rect = card.getBoundingClientRect()
+  const x = event.clientX - rect.left
+  const y = event.clientY - rect.top
+  const midX = rect.width / 2
+  const midY = rect.height / 2
+  const rotateY = ((x - midX) / midX) * 5
+  const rotateX = -((y - midY) / midY) * 5
+
+  card.style.setProperty("--mx", `${(x / rect.width) * 100}%`)
+  card.style.setProperty("--my", `${(y / rect.height) * 100}%`)
+  card.style.setProperty("--rx", `${rotateX}deg`)
+  card.style.setProperty("--ry", `${rotateY}deg`)
+}
+
+function handleMouseLeave() {
+  const card = cardRef.current
+  if (!card) return
+
+  card.style.setProperty("--mx", "50%")
+  card.style.setProperty("--my", "40%")
+  card.style.setProperty("--rx", "0deg")
+  card.style.setProperty("--ry", "0deg")
+}
+
 const saveCollege = async () => {
 
   const user =
@@ -101,9 +131,15 @@ const saveCollege = async () => {
 
   return (
 
-    <div className="group relative flex h-full flex-col bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-[#101010] rounded-[32px] overflow-hidden border border-[#2a2a2a] hover:border-green-500/40 transition duration-500 hover:-translate-y-3 hover:shadow-[0_25px_80px_rgba(0,0,0,0.7)]">
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="premium-card-3d group relative flex h-full flex-col bg-gradient-to-br from-[#1a1a1a] via-[#141414] to-[#101010] rounded-[32px] overflow-hidden border border-white/10 hover:border-green-500/40 transition duration-500"
+    >
 
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-700 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/5" />
+      <div className="premium-card-light" />
+      <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
       <div className="relative overflow-hidden">
 
@@ -154,7 +190,7 @@ const saveCollege = async () => {
 
         <div className="grid grid-cols-2 gap-3 mb-4">
 
-     <div className="bg-[#171717] border border-[#262626] rounded-2xl p-3.5">
+     <div className="premium-panel rounded-2xl p-3.5">
 
             <p className="text-gray-500 text-xs mb-1.5">
               Annual Fees
@@ -168,7 +204,7 @@ const saveCollege = async () => {
 
           </div>
 
-         <div className="bg-[#171717] border border-[#262626] rounded-2xl p-3.5">
+         <div className="premium-panel rounded-2xl p-3.5">
 
             <p className="text-gray-500 text-xs mb-1.5">
               Avg Package
@@ -191,7 +227,7 @@ const saveCollege = async () => {
          <button
   id={`save-${props.id}`}
   onClick={saveCollege}
-  className="w-full py-2.5 rounded-2xl border border-[#2a2a2a] text-sm font-semibold text-white hover:text-green-400 hover:border-green-500/50 transition"
+  className="luxe-button w-full py-2.5 rounded-2xl border border-white/10 text-sm font-semibold text-white hover:text-green-400 hover:border-green-500/50"
 >
   Save College
 </button>
@@ -203,7 +239,7 @@ const saveCollege = async () => {
               className="flex-1"
             >
 
-              <button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black py-3 rounded-2xl transition duration-300 hover:scale-105 shadow-lg shadow-green-500/20">
+              <button className="luxe-button w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black py-3 rounded-2xl shadow-lg shadow-green-500/20">
 
                 View Details
 
@@ -213,7 +249,7 @@ const saveCollege = async () => {
 
            <button
   onClick={props.onCompare}
-  className={`px-5 rounded-2xl text-sm font-bold transition duration-300 hover:scale-105 border ${
+  className={`luxe-button px-5 rounded-2xl text-sm font-bold border ${
     props.isCompared
       ? "bg-green-500 text-black border-green-500"
       : "bg-[#232323] hover:bg-[#2d2d2d] border-[#333] text-white"

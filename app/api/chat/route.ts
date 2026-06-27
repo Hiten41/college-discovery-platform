@@ -39,6 +39,29 @@ type ChatRequestBody = {
   activeCollegeContext?: unknown;
 };
 
+type Coordinates = {
+  lat: number;
+  lon: number;
+};
+
+const CITY_COORDINATES: Record<string, Coordinates> = {
+  chennai: { lat: 13.0827, lon: 80.2707 },
+  delhi: { lat: 28.6139, lon: 77.209 },
+  "new delhi": { lat: 28.6139, lon: 77.209 },
+  gurgaon: { lat: 28.4595, lon: 77.0266 },
+  gurugram: { lat: 28.4595, lon: 77.0266 },
+  kanpur: { lat: 26.4499, lon: 80.3319 },
+  mumbai: { lat: 19.076, lon: 72.8777 },
+  tiruchirappalli: { lat: 10.7905, lon: 78.7047 },
+  trichy: { lat: 10.7905, lon: 78.7047 },
+  mangalore: { lat: 12.9141, lon: 74.856 },
+  warangal: { lat: 17.9689, lon: 79.5941 },
+  hyderabad: { lat: 17.385, lon: 78.4867 },
+  prayagraj: { lat: 25.4358, lon: 81.8463 },
+  allahabad: { lat: 25.4358, lon: 81.8463 },
+  lucknow: { lat: 26.8467, lon: 80.9462 },
+};
+
 function parseMessage(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const message = value.trim();
@@ -110,6 +133,127 @@ function collegeTable(colleges: CollegeRecord[]): string {
       } | ${college.nirfRank ?? "N/A"} | ${college.location} |`,
   );
   return [header, divider, ...rows].join("\n");
+}
+
+function isValueJudgementQuestion(message: string): boolean {
+  return /\b(worth|good|value|roi|return|choose|prefer)\b/.test(normalizeText(message));
+}
+
+function isFinancialAidQuestion(message: string): boolean {
+  return /\b(financial aid|scholarship|scholarships|loan|loans|waiver|waivers|fee remission|fee concession|afford|affordable)\b/.test(
+    normalizeText(message),
+  );
+}
+
+function buildFinancialAidReply(college: CollegeRecord): string {
+  return [
+    `**Financial aid at ${college.name}:** CollegeHub has the college record, but it does not store exact scholarship or fee-waiver scheme rules yet.`,
+    "",
+    `What CollegeHub does know:`,
+    `- **Stored fees:** ${formatFees(college.fees)}`,
+    `- **Ownership:** ${college.ownership ?? "N/A"}`,
+    `- **Location:** ${college.location}${college.state ? `, ${college.state}` : ""}`,
+    `- **Exams accepted:** ${college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}`,
+    `- **Website:** ${college.website ?? "N/A"}`,
+    "",
+    `For IITs, students should usually check institute scholarships, income-based tuition fee remission, education loans, and government/category scholarships directly on the official institute/admissions pages. Verify eligibility by income, category, program, and academic year before deciding.`,
+  ].join("\n");
+}
+
+function buildCollegeWorthReply(college: CollegeRecord): string {
+  const packageLpa = packageToLpa(college.avgPackage);
+  const feesInLakhs = college.fees !== null ? college.fees / 100000 : null;
+  const roiLine =
+    packageLpa !== null && feesInLakhs !== null && feesInLakhs > 0
+      ? `- **ROI signal:** strong on stored data, with avg package ${college.avgPackage} against fees of ${formatFees(college.fees)}.`
+      : `- **ROI signal:** check the exact fee period and branch-wise placement report before deciding.`;
+
+  return [
+    `**Yes, ${college.name} is generally worth serious preference** if you are getting a branch you are happy with.`,
+    "",
+    `CollegeHub stored snapshot:`,
+    `- **NIRF rank:** ${college.nirfRank ?? "N/A"}`,
+    `- **Average package:** ${college.avgPackage ?? "N/A"}`,
+    `- **Highest package:** ${college.highestPackage ?? "N/A"}`,
+    `- **Fees:** ${formatFees(college.fees)}`,
+    `- **Rating:** ${college.rating ?? "N/A"}`,
+    `- **Location:** ${college.location}${college.state ? `, ${college.state}` : ""}`,
+    `- **Ownership:** ${college.ownership ?? "N/A"}`,
+    `- **Exams accepted:** ${college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}`,
+    roiLine,
+    "",
+    `**Decision rule:** prefer ${college.name} when the branch aligns with your long-term goal. If another top IIT offers a much stronger branch for your goals, compare branch outcomes first; IIT brand alone should not override branch fit.`,
+  ].join("\n");
+}
+
+function toRadians(value: number): number {
+  return (value * Math.PI) / 180;
+}
+
+function distanceInKm(a: Coordinates, b: Coordinates): number {
+  const earthRadiusKm = 6371;
+  const dLat = toRadians(b.lat - a.lat);
+  const dLon = toRadians(b.lon - a.lon);
+  const lat1 = toRadians(a.lat);
+  const lat2 = toRadians(b.lat);
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+  return Math.round(earthRadiusKm * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h)));
+}
+
+function getCityCoordinates(value: string | null | undefined): Coordinates | null {
+  if (!value) return null;
+  return CITY_COORDINATES[normalizeText(value)] ?? null;
+}
+
+function inferReferenceCity(message: string): string | null {
+  const normalized = normalizeText(message);
+  return (
+    Object.keys(CITY_COORDINATES)
+      .sort((a, b) => b.length - a.length)
+      .find((city) => normalized.includes(city)) ?? null
+  );
+}
+
+function buildProximityReply(message: string, colleges: CollegeRecord[]): string | null {
+  const normalized = normalizeText(message);
+  if (!/\b(close|closest|near|nearby|nearest|distance|far|farther)\b/.test(normalized)) {
+    return null;
+  }
+
+  const referenceCity = inferReferenceCity(message);
+  const referenceCoordinates = getCityCoordinates(referenceCity);
+  if (!referenceCity || !referenceCoordinates) {
+    return null;
+  }
+
+  const ranked = colleges
+    .map((college) => {
+      const coordinates = getCityCoordinates(college.location);
+      return coordinates
+        ? {
+            college,
+            distance: distanceInKm(referenceCoordinates, coordinates),
+          }
+        : null;
+    })
+    .filter((item): item is { college: CollegeRecord; distance: number } => item !== null)
+    .sort((a, b) => a.distance - b.distance);
+
+  if (ranked.length === 0) {
+    return null;
+  }
+
+  const closest = ranked[0];
+  const rows = ranked
+    .map(
+      ({ college, distance }, index) =>
+        `${index + 1}. **${college.name}** — ${college.location}, approx. ${distance.toLocaleString("en-IN")} km from ${referenceCity}`,
+    )
+    .join("\n");
+
+  return `**Closest to ${referenceCity}: ${closest.college.name}.**\n\n${rows}\n\nFor Gurgaon/Gurugram specifically, IIT Delhi is the most practical nearby option among this list. Final preference should still depend on branch availability, JoSAA cutoff, and your branch priority.`;
 }
 
 function inferLocation(
@@ -278,6 +422,12 @@ export function buildDatabaseReply(
     if (result.colleges.length === 0) {
       return "I could not find that college in the CollegeHub database.";
     }
+    if (isFinancialAidQuestion(message) && result.colleges.length === 1) {
+      return buildFinancialAidReply(result.colleges[0]);
+    }
+    if (isValueJudgementQuestion(message) && result.colleges.length === 1) {
+      return buildCollegeWorthReply(result.colleges[0]);
+    }
     return collegeTable(result.colleges);
   }
 
@@ -303,6 +453,10 @@ export function buildDatabaseReply(
     }
 
     const normalized = normalizeText(message);
+    const proximityReply = buildProximityReply(message, result.colleges);
+    if (proximityReply) {
+      return proximityReply;
+    }
     if (/\b(fee|fees|cost|price)\b/.test(normalized)) {
       const collegesWithFees = [...result.colleges]
         .filter((college) => college.fees !== null)
@@ -383,6 +537,9 @@ function buildRecommendationFallback(
 function buildGeneralFallback(message: string): string {
   const normalized = normalizeText(message);
 
+  if (/\b(hi|hello|hey|namaste|start)\b/.test(normalized)) {
+    return "Hi, I am Motu. Ask me about colleges, fees, placements, rankings, exams, comparisons, or rank guidance. For example: **Compare IIT Delhi and IIT Bombay** or **Best colleges under Rs. 2L fees**.";
+  }
   if (normalized.includes("jee advanced")) {
     return "**JEE Advanced** is the entrance examination used for admission to IIT undergraduate programs. Candidates must first qualify through JEE Main and satisfy the current eligibility rules. Admission is based on the JEE Advanced rank through JoSAA counselling.";
   }
@@ -399,7 +556,7 @@ function buildGeneralFallback(message: string): string {
     return "**Computer Science Engineering** covers programming, algorithms, computer systems, databases, networks, and software development. When comparing programs, check the curriculum, faculty, internships, coding culture, branch-wise placements, and total cost.";
   }
 
-  return "Motu could not generate that general explanation right now. Please try again shortly.";
+  return "I am Motu, CollegeHub's college guidance assistant. I can help with colleges, ranks, fees, placements, exams, comparisons, scholarships, and admissions. Try asking something like **Is IIT Kanpur worth it?** or **Financial aid in IIT Delhi**.";
 }
 
 async function generateGroundedReply(
@@ -416,7 +573,7 @@ async function generateGroundedReply(
   }
 
   const model = new GoogleGenerativeAI(apiKey).getGenerativeModel({
-    model: "gemini-2.5-flash",
+    model: process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
   });
   const prompt = buildGroundedPrompt(
     message,

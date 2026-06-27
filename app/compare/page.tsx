@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown, ChevronUp, MapPin, Star } from "lucide-react";
 import { normalizeStoredCompareColleges } from "@/lib/compareStorage";
 
 import {
@@ -39,6 +40,7 @@ const [colleges] = useState<College[]>(() => {
   );
 
 });
+const [isDockOpen, setIsDockOpen] = useState(false);
 
  
 
@@ -85,7 +87,7 @@ const [colleges] = useState<College[]>(() => {
   }
 
   return (
-  <div className="min-h-screen bg-[#080808] relative overflow-hidden">
+  <div className="premium-depth-root min-h-screen relative overflow-hidden pb-36">
 <div className="absolute inset-0">
 
   <div
@@ -149,7 +151,38 @@ const [colleges] = useState<College[]>(() => {
   </div>
 
 </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
+        <div className="luxe-surface luxe-section mb-8 rounded-3xl p-4 sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-violet-300">
+                Selected for comparison
+              </p>
+              <h2 className="mt-1 text-2xl font-black text-white">
+                {colleges.length} colleges ready
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsDockOpen(true)}
+              className="luxe-button inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-300/25 bg-emerald-400/10 px-4 py-3 text-sm font-bold text-emerald-100 hover:border-emerald-200/50 hover:bg-emerald-400/15"
+            >
+              View selected dock
+              <ChevronUp className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+            {colleges.map((college) => (
+              <span
+                key={college.id}
+                className="shrink-0 rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs font-bold text-zinc-200"
+              >
+                {college.name}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="hidden">
 
           {colleges.map((college) => (
 
@@ -227,7 +260,7 @@ const [colleges] = useState<College[]>(() => {
         </div>
                 <div className="grid md:grid-cols-3 gap-6 mb-12">
 
-          <div className="bg-[#111111] border border-[#222222] rounded-3xl p-4 md:p-6 overflow-x-auto">
+          <div className="luxe-surface rounded-3xl p-4 md:p-6 overflow-x-auto">
 
             <p className="text-zinc-500 mb-3">
               Best Rank
@@ -239,7 +272,7 @@ const [colleges] = useState<College[]>(() => {
 
           </div>
 
-          <div className="bg-[#111111] border border-[#222222] rounded-3xl p-6">
+          <div className="luxe-surface rounded-3xl p-6">
 
             <p className="text-zinc-500 mb-3">
               Best Package
@@ -251,7 +284,7 @@ const [colleges] = useState<College[]>(() => {
 
           </div>
 
-          <div className="bg-[#111111] border border-[#222222] rounded-3xl p-6">
+          <div className="luxe-surface rounded-3xl p-6">
 
             <p className="text-zinc-500 mb-3">
               Lowest Fees
@@ -277,7 +310,7 @@ const [colleges] = useState<College[]>(() => {
 
         </div>
 
-        <div className="overflow-x-auto rounded-3xl border border-[#222222] bg-[#111111]">
+        <div className="luxe-surface overflow-x-auto rounded-3xl">
 
     <table className="w-full min-w-[760px] text-left text-sm md:text-xl">
 
@@ -477,7 +510,7 @@ const [colleges] = useState<College[]>(() => {
 
         <div className="grid lg:grid-cols-2 gap-6">
 
-          <div className="bg-[#111111] border border-[#222222] rounded-3xl p-6">
+          <div className="luxe-surface rounded-3xl p-6">
 
             <h3 className="text-xl font-bold text-white mb-6">
               Average Package Comparison
@@ -529,7 +562,7 @@ const [colleges] = useState<College[]>(() => {
 
           </div>
 
-          <div className="bg-[#111111] border border-[#222222] rounded-3xl p-4 md:p-6 overflow-x-auto">
+          <div className="luxe-surface rounded-3xl p-4 md:p-6 overflow-x-auto">
 
             <h3 className="text-xl font-bold text-white mb-6">
               Annual Fees Comparison
@@ -578,6 +611,88 @@ const [colleges] = useState<College[]>(() => {
 
         </div>
 
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 px-3 pb-3 sm:px-5 sm:pb-5">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-[28px] border border-white/10 bg-[#080b12]/92 shadow-[0_-24px_90px_rgba(0,0,0,0.68),0_0_55px_rgba(37,99,235,0.18)] backdrop-blur-2xl">
+          <button
+            type="button"
+            onClick={() => setIsDockOpen((value) => !value)}
+            className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left sm:px-5"
+            aria-expanded={isDockOpen}
+          >
+            <div className="min-w-0">
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-emerald-300">
+                Compare dock
+              </p>
+              <div className="mt-1 flex min-w-0 items-center gap-2">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-2xl bg-emerald-400/10 text-sm font-black text-emerald-200">
+                  {colleges.length}
+                </span>
+                <p className="truncate text-sm font-bold text-white sm:text-base">
+                  {colleges.map((college) => college.name).join(" vs ")}
+                </p>
+              </div>
+            </div>
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.06] text-zinc-200">
+              {isDockOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronUp className="h-5 w-5" />}
+            </span>
+          </button>
+
+          <div
+            className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+              isDockOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+            }`}
+          >
+            <div className="min-h-0 overflow-hidden">
+              <div className="compare-dock-scroll flex max-h-[52vh] gap-3 overflow-x-auto overflow-y-hidden border-t border-white/10 px-4 pb-4 pt-1 sm:px-5">
+                {colleges.map((college) => (
+                  <article
+                    key={college.id}
+                    className="luxe-card w-[280px] shrink-0 rounded-3xl border border-white/10 bg-white/[0.055] p-3 shadow-[0_16px_45px_rgba(0,0,0,0.34)]"
+                  >
+                    <div className="flex gap-3">
+                      <img
+                        src={college.image}
+                        alt={college.name}
+                        className="h-20 w-24 shrink-0 rounded-2xl object-cover"
+                      />
+                      <div className="min-w-0">
+                        <h3 className="line-clamp-2 text-sm font-black leading-5 text-white">
+                          {college.name}
+                        </h3>
+                        <p className="mt-1 flex items-center gap-1 text-xs font-semibold text-zinc-400">
+                          <MapPin className="h-3 w-3 text-emerald-300" />
+                          {college.location}
+                        </p>
+                        <p className="mt-1 flex items-center gap-1 text-xs font-semibold text-zinc-400">
+                          <Star className="h-3 w-3 text-yellow-300" />
+                          {college.rating}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+                      <div className="rounded-2xl bg-black/25 px-2 py-2">
+                        <p className="text-[10px] uppercase tracking-[0.12em] text-zinc-500">Rank</p>
+                        <p className="mt-1 text-xs font-black text-green-300">#{college.nirfRank}</p>
+                      </div>
+                      <div className="rounded-2xl bg-black/25 px-2 py-2">
+                        <p className="text-[10px] uppercase tracking-[0.12em] text-zinc-500">Package</p>
+                        <p className="mt-1 truncate text-xs font-black text-violet-300">{college.avgPackage}</p>
+                      </div>
+                      <div className="rounded-2xl bg-black/25 px-2 py-2">
+                        <p className="text-[10px] uppercase tracking-[0.12em] text-zinc-500">Fees</p>
+                        <p className="mt-1 text-xs font-black text-orange-300">
+                          Rs. {college.fees?.toLocaleString("en-IN")}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

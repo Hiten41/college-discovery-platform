@@ -102,7 +102,7 @@ export default function RankPredictorPage() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050706] text-white">
+    <main className="premium-depth-root min-h-screen overflow-hidden text-white">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(34,197,94,0.14),transparent_30%),radial-gradient(circle_at_85%_30%,rgba(16,185,129,0.08),transparent_28%)]" />
 
       <header className="relative z-10 border-b border-white/10 bg-black/30 backdrop-blur-xl">
@@ -134,7 +134,7 @@ export default function RankPredictorPage() {
 
       <section className="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 pb-24 lg:grid-cols-[380px_1fr] lg:px-8">
         <aside>
-          <form onSubmit={handleSubmit} className="sticky top-6 rounded-[30px] border border-white/10 bg-white/[0.045] p-5 shadow-2xl backdrop-blur-xl sm:p-6">
+          <form onSubmit={handleSubmit} className="luxe-surface sticky top-6 rounded-[30px] p-5 sm:p-6">
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-green-400">Your profile</p>
@@ -154,7 +154,7 @@ export default function RankPredictorPage() {
                   max={10000000}
                   value={form.rank}
                   onChange={(event) => setForm({ ...form, rank: Number(event.target.value) })}
-                  className="w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-3.5 text-white outline-none transition focus:border-green-400/60 focus:ring-4 focus:ring-green-400/10"
+                  className="luxe-input w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-3.5 text-white outline-none transition focus:border-green-400/60"
                 />
               </label>
               <div className="grid gap-3 min-[380px]:grid-cols-2">
@@ -170,13 +170,13 @@ export default function RankPredictorPage() {
                   value={form.homeState}
                   onChange={(event) => setForm({ ...form, homeState: event.target.value })}
                   placeholder="e.g. Tamil Nadu"
-                  className="w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-3.5 text-white outline-none transition placeholder:text-zinc-600 focus:border-green-400/60 focus:ring-4 focus:ring-green-400/10"
+                  className="luxe-input w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-3.5 text-white outline-none transition placeholder:text-zinc-600 focus:border-green-400/60"
                 />
               </label>
               <SelectField label="Preferred Branch" value={form.preferredBranch} options={BRANCHES} onChange={(preferredBranch) => setForm({ ...form, preferredBranch: preferredBranch as RankPredictorInput["preferredBranch"] })} />
             </div>
 
-            <button disabled={isLoading} className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 px-5 py-4 font-black text-black shadow-[0_14px_40px_rgba(34,197,94,0.22)] transition hover:from-green-400 hover:to-emerald-400 disabled:cursor-wait disabled:opacity-60">
+            <button disabled={isLoading} className="luxe-button mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 px-5 py-4 font-black text-black shadow-[0_14px_40px_rgba(34,197,94,0.22)] hover:from-green-400 hover:to-emerald-400 disabled:cursor-wait disabled:opacity-60">
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <BarChart3 className="h-5 w-5" />}
               {isLoading ? "Evaluating colleges" : "Generate predictions"}
             </button>
@@ -191,7 +191,7 @@ export default function RankPredictorPage() {
           {error && <div className="mb-6 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-red-200">{error}</div>}
 
           {!result && !isLoading && (
-            <div className="grid min-h-[540px] place-items-center rounded-[32px] border border-dashed border-white/15 bg-white/[0.025] p-8 text-center">
+            <div className="luxe-surface luxe-section grid min-h-[540px] place-items-center rounded-[32px] border-dashed p-8 text-center">
               <div className="max-w-md">
                 <div className="mx-auto grid h-20 w-20 place-items-center rounded-3xl border border-green-400/20 bg-green-400/10"><TrendingUp className="h-9 w-9 text-green-400" /></div>
                 <h2 className="mt-6 text-3xl font-black">Your shortlist starts here</h2>
@@ -202,7 +202,7 @@ export default function RankPredictorPage() {
 
           {result && (
             <div className="space-y-8">
-              <div className="rounded-[28px] border border-amber-300/20 bg-gradient-to-br from-amber-400/[0.12] via-white/[0.045] to-white/[0.025] p-5 shadow-2xl shadow-amber-950/10 backdrop-blur">
+              <div className="luxe-surface rounded-[28px] border-amber-300/20 p-5">
                 <div className="flex gap-4">
                   <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-amber-300/25 bg-amber-300/10 text-amber-200">
                     <AlertTriangle className="h-6 w-6" />
@@ -222,7 +222,7 @@ export default function RankPredictorPage() {
                   const meta = tierMeta[tier];
                   const Icon = meta.icon;
                   return (
-                    <button key={tier} onClick={() => setActiveTier(tier)} className={`rounded-3xl border bg-white/[0.045] p-5 text-left transition hover:-translate-y-0.5 hover:bg-white/[0.07] ${meta.border}`}>
+                    <button key={tier} onClick={() => setActiveTier(tier)} className={`luxe-button luxe-card rounded-3xl border bg-white/[0.045] p-5 text-left hover:bg-white/[0.07] ${meta.border}`}>
                       <div className="flex items-center justify-between"><Icon className={`h-6 w-6 ${meta.color}`} /><span className="text-3xl font-black">{result.groups[tier].length}</span></div>
                       <p className="mt-5 font-bold">{meta.label}</p>
                       <p className="mt-1 text-xs text-zinc-500">View recommendations</p>
@@ -254,7 +254,7 @@ export default function RankPredictorPage() {
                     ) : (
                       <div className="grid gap-4 xl:grid-cols-2">
                         {result.groups[tier].map((prediction) => (
-                          <article key={prediction.college.name} className={`rounded-[28px] border bg-gradient-to-b from-white/[0.065] to-white/[0.025] p-5 ${meta.border}`}>
+                          <article key={prediction.college.name} className={`luxe-surface luxe-card rounded-[28px] p-5 ${meta.border}`}>
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/[0.07]"><Building2 className="h-5 w-5 text-green-300" /></span><div><h4 className="font-black leading-5">{prediction.college.name}</h4><p className="mt-1 flex items-center gap-1 text-xs text-zinc-500"><MapPin className="h-3 w-3" />{prediction.college.location}</p></div></div>
                               <div className="text-right">
@@ -292,7 +292,7 @@ export default function RankPredictorPage() {
                 );
               })}
 
-              <div className="rounded-[28px] border border-white/10 bg-white/[0.035] p-6">
+              <div className="luxe-surface rounded-[28px] p-6">
                 <div className="flex items-center gap-3"><BrainCircuit className="h-6 w-6 text-green-400" /><h3 className="text-lg font-black">How to read this result</h3></div>
                 <p className="mt-4 text-sm leading-6 text-zinc-400">{result.disclaimer}</p>
                 <div className="mt-4 space-y-2">{result.limitations.map((limitation) => <p key={limitation} className="flex gap-2 text-sm text-zinc-500"><ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-green-500" />{limitation}</p>)}</div>
@@ -331,7 +331,7 @@ function EmptyTierState({ tier }: { tier: PredictionTier }) {
       : "No Safe Colleges Yet";
 
   return (
-    <div className={`rounded-3xl border bg-gradient-to-br from-white/[0.055] to-white/[0.02] p-8 ${meta.border}`}>
+    <div className={`luxe-surface rounded-3xl p-8 ${meta.border}`}>
       <div className="mx-auto max-w-lg text-center">
         <div className="mx-auto grid h-16 w-16 place-items-center rounded-3xl border border-white/10 bg-white/[0.06]">
           <Icon className={`h-8 w-8 ${meta.color}`} />
@@ -368,7 +368,7 @@ function NirfMetric({ value }: { value: number | null }) {
 }
 
 function SelectField({ label, value, options, onChange }: { label: string; value: string; options: readonly string[]; onChange: (value: string) => void }) {
-  return <label className="block"><span className="mb-2 block text-sm font-semibold text-zinc-300">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-2xl border border-white/10 bg-[#0d100e] px-4 py-3.5 text-white outline-none transition focus:border-green-400/60 focus:ring-4 focus:ring-green-400/10">{options.map((option) => <option key={option}>{option}</option>)}</select></label>;
+  return <label className="block"><span className="mb-2 block text-sm font-semibold text-zinc-300">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className="luxe-input w-full rounded-2xl border border-white/10 bg-[#0d100e] px-4 py-3.5 text-white outline-none transition focus:border-green-400/60">{options.map((option) => <option key={option}>{option}</option>)}</select></label>;
 }
 
 function Metric({ icon: Icon, label, value }: { icon: typeof Medal; label: string; value: string }) {

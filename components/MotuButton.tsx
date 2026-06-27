@@ -15,7 +15,7 @@ export default function MotuButton({ onClick, isOpen }: MotuButtonProps) {
       aria-label={isOpen ? "Close Ask Motu" : "Open Ask Motu"}
       className="group fixed bottom-6 right-6 z-[70] flex flex-col items-center gap-2 outline-none"
     >
-      <span className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full border border-green-400/30 bg-gradient-to-br from-green-400 via-emerald-500 to-green-700 text-black shadow-[0_0_45px_rgba(34,197,94,0.38)] transition duration-300 group-hover:-translate-y-1 group-hover:scale-105 group-focus-visible:ring-4 group-focus-visible:ring-green-400/30">
+      <span className="luxe-button relative flex h-[72px] w-[72px] items-center justify-center rounded-full border border-green-400/30 bg-gradient-to-br from-green-400 via-emerald-500 to-green-700 text-black shadow-[0_0_45px_rgba(34,197,94,0.38)] group-focus-visible:ring-4 group-focus-visible:ring-green-400/30">
         <span className="absolute inset-0 rounded-full bg-green-400/30 blur-xl transition duration-300 group-hover:bg-green-300/45" />
         <span className="absolute inset-0 animate-ping rounded-full border border-green-300/30" />
         <span className="relative z-10 grid h-full w-full place-items-center overflow-hidden rounded-full">

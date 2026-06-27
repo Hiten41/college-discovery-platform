@@ -72,16 +72,16 @@ export default function SavedCollegesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center text-white text-3xl font-bold">
+      <div className="premium-depth-root min-h-screen flex items-center justify-center text-white text-3xl font-bold">
         Loading Saved Colleges...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] text-white px-5 py-8 md:px-10">
+    <div className="premium-depth-root min-h-screen text-white px-5 py-8 md:px-10">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 rounded-[36px] border border-[#242424] bg-gradient-to-br from-[#102817] via-[#101010] to-black p-7 md:p-10">
+        <div className="luxe-surface luxe-section mb-10 rounded-[36px] p-7 md:p-10">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="mb-3 inline-flex rounded-full border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-300">
@@ -98,7 +98,7 @@ export default function SavedCollegesPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-green-500/20 bg-green-500/10 px-5 py-4">
+            <div className="rounded-2xl border border-green-500/20 bg-green-500/10 px-5 py-4 shadow-[0_18px_48px_rgba(34,197,94,0.12)]">
               <p className="text-sm font-semibold text-zinc-400">Total Saved</p>
               <p className="text-3xl font-black text-green-300">
                 {savedColleges.length}
@@ -108,7 +108,7 @@ export default function SavedCollegesPage() {
         </div>
 
         {savedColleges.length === 0 ? (
-          <div className="rounded-[32px] border border-[#2a2a2a] bg-[#181818] p-10 text-center">
+          <div className="luxe-surface rounded-[32px] p-10 text-center">
             <h2 className="mb-4 text-3xl font-black">No Saved Colleges</h2>
             <p className="text-gray-400">
               Save colleges from the homepage to see them here.
@@ -126,7 +126,7 @@ export default function SavedCollegesPage() {
               return (
                 <article
                   key={item.id}
-                  className="overflow-hidden rounded-[32px] border border-[#262626] bg-gradient-to-b from-[#181818] via-[#121212] to-[#0f0f0f] shadow-[0_24px_80px_rgba(0,0,0,0.32)]"
+                  className="luxe-surface luxe-card overflow-hidden rounded-[32px]"
                 >
                   {college.image ? (
                     // Stored college images may come from different external hosts.
@@ -182,7 +182,7 @@ export default function SavedCollegesPage() {
                     <div className="mt-6 grid gap-3 sm:grid-cols-3">
                       <Link
                         href={`/college/${college.id}`}
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm font-black text-green-300 transition hover:bg-green-500/15"
+                        className="luxe-button inline-flex items-center justify-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm font-black text-green-300 hover:bg-green-500/15"
                       >
                         <Eye className="h-4 w-4" />
                         View Details
@@ -193,7 +193,7 @@ export default function SavedCollegesPage() {
                         target="_blank"
                         rel="noreferrer"
                         aria-disabled={!college.website}
-                        className={`inline-flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-black transition ${
+                        className={`luxe-button inline-flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-black ${
                           college.website
                             ? "border-green-500/20 bg-green-500/10 text-green-300 hover:bg-green-500/15"
                             : "pointer-events-none border-white/5 bg-white/5 text-zinc-600"
@@ -205,7 +205,7 @@ export default function SavedCollegesPage() {
 
                       <button
                         onClick={() => removeSavedCollege(item.id)}
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 px-4 py-3 text-sm font-black text-black shadow-[0_12px_32px_rgba(34,197,94,0.24)] transition hover:from-green-400 hover:to-emerald-400"
+                        className="luxe-button inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 px-4 py-3 text-sm font-black text-black shadow-[0_12px_32px_rgba(34,197,94,0.24)] hover:from-green-400 hover:to-emerald-400"
                       >
                         <Trash2 className="h-4 w-4" />
                         Remove
@@ -230,7 +230,7 @@ function Metric({
   value: string | number;
 }) {
   return (
-    <div className="rounded-2xl border border-white/5 bg-black/20 p-4">
+    <div className="rounded-2xl border border-white/10 bg-black/25 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
       <p className="mb-2 text-xs font-bold uppercase tracking-wider text-zinc-500">
         {label}
       </p>

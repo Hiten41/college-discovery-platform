@@ -440,18 +440,25 @@ setMaxRank(200)
       <Navbar />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-      <div
-  className="relative overflow-hidden rounded-[28px] md:rounded-[40px] border border-[#1f1f1f] bg-gradient-to-br from-[#0f2b16] via-[#090909] to-[#050505] p-6 sm:p-8 md:p-16 mb-10 md:mb-14"
+      <motion.section
+  initial={{ opacity: 0, y: 28, scale: 0.985 }}
+  animate={{ opacity: 1, y: 0, scale: 1 }}
+  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+  className="premium-hero-shell relative overflow-hidden rounded-[28px] md:rounded-[40px] border border-[#1f1f1f] bg-gradient-to-br from-[#07120c]/95 via-[#08090f]/95 to-[#040507]/95 p-6 sm:p-8 md:p-16 mb-10 md:mb-14"
 >
- <>
-  <div className="absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full bg-green-500/20 blur-[140px]" />
-  <div className="absolute bottom-0 left-0 h-[280px] w-[280px] rounded-full bg-emerald-600/10 blur-[120px]" />
-</>
+ <div className="premium-aurora" />
+ <div className="premium-particles" />
+ <div className="absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full bg-green-500/18 blur-[140px]" />
+ <div className="absolute bottom-0 left-0 h-[280px] w-[280px] rounded-full bg-blue-600/10 blur-[120px]" />
   <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
 
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.12, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+    >
 
-      <div className="inline-flex items-center px-5 py-2 rounded-full border border-green-500/20 bg-green-500/10 text-green-400 font-semibold mb-8">
+      <div className="inline-flex items-center px-5 py-2 rounded-full border border-green-500/20 bg-green-500/10 text-green-300 font-semibold mb-8 shadow-[0_0_40px_rgba(34,197,94,0.12)] backdrop-blur-xl">
         College Discovery Platform
       </div>
 
@@ -486,14 +493,14 @@ md:min-h-[180px]
   value={searchTerm}
   onChange={(e) => setSearchTerm(e.target.value)}
   onKeyDown={handleSearchKeyDown}
-  className="w-full bg-[#1b1b1b] border border-[#2a2a2a] text-white px-5 sm:px-6 py-4 sm:py-5 rounded-2xl mb-6"
+  className="luxe-input w-full bg-black/40 border border-white/10 text-white px-5 sm:px-6 py-4 sm:py-5 rounded-2xl mb-6 backdrop-blur-xl outline-none transition focus:border-green-400/50"
 />
 
       <div className="flex flex-wrap gap-4">
 
         <button
           onClick={handleExploreColleges}
-          className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-black font-black"
+          className="luxe-button w-full sm:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-black font-black shadow-[0_18px_55px_rgba(34,197,94,0.24)]"
         >
           Explore Colleges
         </button>
@@ -504,18 +511,42 @@ md:min-h-[180px]
               .getElementById("compare")
               ?.scrollIntoView({ behavior: "smooth" })
           }
-          className="w-full sm:w-auto px-6 py-4 rounded-2xl border border-[#2a2a2a] text-white font-bold hover:border-green-500/40 transition"
+          className="luxe-button w-full sm:w-auto px-6 py-4 rounded-2xl border border-white/10 bg-white/[0.035] text-white font-bold hover:border-green-500/40 backdrop-blur-xl"
         >
           Compare Colleges
         </button>
 
       </div>
 
-    </div>
+      <div className="mt-8 grid grid-cols-3 gap-3 sm:max-w-xl">
+        {[
+          ["150+", "Institutions"],
+          ["AI", "Guidance"],
+          ["3-way", "Compare"],
+        ].map(([value, label], index) => (
+          <motion.div
+            key={label}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 + index * 0.08, duration: 0.5 }}
+            className="premium-panel rounded-2xl px-4 py-3"
+          >
+            <p className="text-2xl font-black text-white">{value}</p>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-zinc-500">{label}</p>
+          </motion.div>
+        ))}
+      </div>
+
+    </motion.div>
 
    <div className="hidden lg:block">
 
-  <div className="relative overflow-hidden rounded-[36px] border border-[#242424] bg-gradient-to-b from-[#181818] via-[#121212] to-[#0d0d0d] p-8">
+  <motion.div
+    initial={{ opacity: 0, rotateY: -8, y: 24 }}
+    animate={{ opacity: 1, rotateY: 0, y: 0 }}
+    transition={{ delay: 0.22, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+    className="premium-panel relative overflow-hidden rounded-[36px] p-8"
+  >
 
     <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
 
@@ -611,18 +642,18 @@ md:min-h-[180px]
 
     </div>
 
-  </div>
+  </motion.div>
 
 </div>
 
   </div>
-</div>
+</motion.section>
 <div className="mb-16">
 
  
   <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
 
-<div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+<div className="premium-panel group relative overflow-hidden rounded-[28px] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
 
   <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
 
@@ -661,7 +692,7 @@ max-w-2xl
 
 </div>
 
-  <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+  <div className="premium-panel group relative overflow-hidden rounded-[28px] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
 
   <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
 
@@ -695,7 +726,7 @@ max-w-2xl
 
 </div>
 
-  <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+  <div className="premium-panel group relative overflow-hidden rounded-[28px] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
 
   <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
 
@@ -729,7 +760,7 @@ max-w-2xl
 
 </div>
 
-    <div className="group relative overflow-hidden rounded-[28px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
+    <div className="premium-panel group relative overflow-hidden rounded-[28px] p-6 md:p-8 transition-all duration-500 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-[0_20px_80px_rgba(34,197,94,0.18)]">
 
   <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
 
@@ -768,7 +799,7 @@ max-w-2xl
 </div>
 <div id="compare">
   {compareColleges.length > 0 && (
-    <div className="mb-16 relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-[#2a2a2a] bg-gradient-to-br from-[#171717] via-[#121212] to-black p-5 md:p-8">
+    <div className="premium-panel mb-16 relative overflow-hidden rounded-[28px] md:rounded-[36px] p-5 md:p-8">
 
       <div className="flex items-center justify-between mb-10">
 
@@ -798,7 +829,7 @@ max-w-2xl
 
      router.push("/compare")
     }}
-    className="px-5 py-3 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-black font-black hover:scale-105 transition"
+    className="luxe-button px-5 py-3 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 text-black font-black"
   >
     View Detailed Comparison
   </button>
@@ -817,7 +848,7 @@ max-w-2xl
 
           <div
             key={college.id}
-            className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-[32px] overflow-hidden"
+            className="luxe-surface luxe-card rounded-[32px] overflow-hidden"
           >
 
             <img
@@ -945,7 +976,7 @@ hover:scale-105
 
         <div id="colleges" className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10 scroll-mt-28">
           <div className="h-fit lg:sticky lg:top-28">
-          <div className="relative overflow-hidden rounded-[28px] md:rounded-[32px] border border-[#262626] bg-gradient-to-b from-[#171717] via-[#121212] to-[#0f0f0f] p-6 md:p-8">
+          <div className="premium-panel relative overflow-hidden rounded-[28px] md:rounded-[32px] p-6 md:p-8">
             <div className="absolute top-0 left-0 h-[3px] w-full bg-gradient-to-r from-green-500 via-emerald-400 to-green-500" />
               <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl md:text-[2rem] font-extrabold tracking-tight text-white">
@@ -954,7 +985,7 @@ hover:scale-105
 
                 <button
                   onClick={resetFilters}
-                 className="px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20 text-green-300 font-semibold hover:bg-green-500/15 transition"
+                  className="luxe-button px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20 text-green-300 font-semibold hover:bg-green-500/15"
                 >
                   Reset
                 </button>
@@ -972,7 +1003,7 @@ hover:scale-105
     <select
       value={selectedState}
       onChange={(e) => setSelectedState(e.target.value)}
-      className="w-full bg-[#202020] border border-[#2a2a2a] text-white px-5 py-4 rounded-2xl outline-none focus:border-green-500"
+      className="luxe-input w-full bg-black/35 border border-white/10 text-white px-5 py-4 rounded-2xl outline-none focus:border-green-500"
     >
       <option value="">All States</option>
 
@@ -998,7 +1029,7 @@ hover:scale-105
     <select
       value={selectedOwnership}
       onChange={(e) => setSelectedOwnership(e.target.value)}
-      className="w-full bg-[#202020] border border-[#2a2a2a] text-white px-5 py-4 rounded-2xl outline-none focus:border-green-500"
+      className="luxe-input w-full bg-black/35 border border-white/10 text-white px-5 py-4 rounded-2xl outline-none focus:border-green-500"
     >
       <option value="">All Types</option>
 
@@ -1017,7 +1048,7 @@ hover:scale-105
     <select
       value={selectedExam}
       onChange={(e) => setSelectedExam(e.target.value)}
-      className="w-full bg-[#202020] border border-[#2a2a2a] text-white px-5 py-4 rounded-2xl outline-none focus:border-green-500"
+      className="luxe-input w-full bg-black/35 border border-white/10 text-white px-5 py-4 rounded-2xl outline-none focus:border-green-500"
     >
       <option value="">All Exams</option>
 

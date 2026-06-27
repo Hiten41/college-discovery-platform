@@ -11,9 +11,11 @@ export default function GalaxyBackground() {
       data-mouse-interaction="false"
       data-mouse-repulsion="false"
     >
+      <div className="galaxy-background__beams" />
       <div className="galaxy-background__glow" />
       <div className="galaxy-background__stars galaxy-background__stars--near" />
       <div className="galaxy-background__stars galaxy-background__stars--far" />
+      <div className="galaxy-background__noise" />
       <div className="galaxy-background__veil" />
     </div>
   );

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import GalaxyBackground from "@/components/GalaxyBackground";
 import MotuChat from "@/components/MotuChat";
+import PremiumCursor from "@/components/PremiumCursor";
 
 export const metadata: Metadata = {
   title: "CollegeHub | Compare Colleges",
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
         <GalaxyBackground />
+        <PremiumCursor />
         {children}
         <MotuChat />
       </body>

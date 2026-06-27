@@ -8,6 +8,7 @@ const followUpPatterns = [
   /^(?:and\s+)?(?:what|wht|how)\s+(?:about|abt)\b/,
   /^and\s+(?:fees?|rankings?|placements?|packages?|location|roi)\b/,
   /^which\s+(?:one\s+)?(?:is|has|would|should)\b/,
+  /^which\s+(?:college|clg|institute|one)\b/,
   /^which\s+would\s+you\s+recommend\b/,
   /^compare\s+again\b/,
   /^tell\s+me\s+more\b/,

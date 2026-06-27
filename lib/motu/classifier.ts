@@ -95,7 +95,8 @@ export function classifyQuery(message: string): QueryClassification {
   }
 
   if (
-    /\b(collegehub|fees|package|placements|nirf|rating)\b/.test(normalized) ||
+    /\b(collegehub|fees|fee|financial|aid|scholarship|scholarships|loan|loans|waiver|waivers|package|placements|nirf|rating)\b/.test(normalized) ||
+    (/\b(worth|good|value|roi|return|choose|prefer)\b/.test(normalized) && /\b(college|institute|university|iit|nit|iiit)\b/.test(normalized)) ||
     (/\b(tell me about|details of|information about)\b/.test(normalized) && /\b(college|institute|university|iit|nit|iiit)\b/.test(normalized))
   ) {
     return { type: "DATABASE_QUERY", operation: "COLLEGE_DETAILS", budget, studentRank, branch, location: null, ownership };
@@ -103,4 +104,3 @@ export function classifyQuery(message: string): QueryClassification {
 
   return { type: "GENERAL_QUERY", operation: "GENERAL_GUIDANCE", budget, studentRank, branch, location: null, ownership };
 }
-

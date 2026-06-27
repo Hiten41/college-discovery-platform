@@ -145,6 +145,26 @@ function isFinancialAidQuestion(message: string): boolean {
   );
 }
 
+function isOwnershipQuestion(message: string): boolean {
+  return /\b(government|govt|public|private|ownership|owned|based)\b/.test(
+    normalizeText(message),
+  );
+}
+
+function buildOwnershipReply(college: CollegeRecord): string {
+  const ownership = college.ownership ?? "N/A";
+  const article = /^[aeiou]/i.test(ownership) ? "an" : "a";
+
+  return [
+    `**Yes. ${college.name} is listed as ${article} ${ownership} institution in CollegeHub.**`,
+    "",
+    `Stored details:`,
+    `- **Ownership:** ${ownership}`,
+    `- **Location:** ${college.location}${college.state ? `, ${college.state}` : ""}`,
+    `- **Exams accepted:** ${college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}`,
+  ].join("\n");
+}
+
 function buildFinancialAidReply(college: CollegeRecord): string {
   return [
     `**Financial aid at ${college.name}:** CollegeHub has the college record, but it does not store exact scholarship or fee-waiver scheme rules yet.`,
@@ -422,6 +442,9 @@ export function buildDatabaseReply(
     if (result.colleges.length === 0) {
       return "I could not find that college in the CollegeHub database.";
     }
+    if (isOwnershipQuestion(message) && result.colleges.length === 1) {
+      return buildOwnershipReply(result.colleges[0]);
+    }
     if (isFinancialAidQuestion(message) && result.colleges.length === 1) {
       return buildFinancialAidReply(result.colleges[0]);
     }
@@ -534,11 +557,29 @@ function buildRecommendationFallback(
   return [...items, ...limitations.map((note) => `\n${note}`)].join("\n");
 }
 
-function buildGeneralFallback(message: string): string {
+export function buildGeneralFallback(message: string): string {
   const normalized = normalizeText(message);
 
   if (/\b(hi|hello|hey|namaste|start)\b/.test(normalized)) {
     return "Hi, I am Motu. Ask me about colleges, fees, placements, rankings, exams, comparisons, or rank guidance. For example: **Compare IIT Delhi and IIT Bombay** or **Best colleges under Rs. 2L fees**.";
+  }
+  if (
+    /\biits?\b/.test(normalized) && /\bnits?\b/.test(normalized) ||
+    /\b(general|overall|broad)\s+comparison\b/.test(normalized)
+  ) {
+    return [
+      "**General IIT vs NIT comparison:**",
+      "",
+      "| Factor | IITs | NITs |",
+      "|---|---|---|",
+      "| Entrance route | JEE Advanced after qualifying JEE Main | JEE Main |",
+      "| Brand and research | Usually stronger national/global brand and deeper research ecosystem | Strong national reputation, especially top NITs |",
+      "| Placements | Top IITs usually lead, but branch matters a lot | Top NITs can beat lower IITs or weaker branches in outcomes |",
+      "| Fees and access | Often higher competition for seats | Wider geographic spread and more seats through JEE Main |",
+      "| Best fit | Choose when you get a strong branch or value the IIT ecosystem | Choose when you get a better branch, location, or ROI at a strong NIT |",
+      "",
+      "**Simple rule:** prefer branch + college tier together. A good branch at NIT Trichy, Surathkal, Warangal, or similar top NITs can be a better decision than a weak-fit branch at a lower IIT.",
+    ].join("\n");
   }
   if (normalized.includes("jee advanced")) {
     return "**JEE Advanced** is the entrance examination used for admission to IIT undergraduate programs. Candidates must first qualify through JEE Main and satisfy the current eligibility rules. Admission is based on the JEE Advanced rank through JoSAA counselling.";

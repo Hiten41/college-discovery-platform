@@ -17,6 +17,8 @@ export async function getAllColleges(): Promise<CollegeRecord[]> {
 export async function getCollegeByName(name: string): Promise<CollegeRecord | null> {
   const colleges = await getAllColleges();
   const normalizedName = normalizeText(name);
+  if (normalizedName.length <= 3) return null;
+
   return (
     colleges.find((college) => normalizeText(college.name) === normalizedName) ??
     colleges.find((college) => normalizeText(college.name).includes(normalizedName)) ??
@@ -65,7 +67,16 @@ export function findMentionedCollegeNames(message: string, colleges: CollegeReco
 }
 
 export function parseComparisonNames(message: string): string[] {
-  const withoutCommand = message.replace(/^.*?\b(compare|comparison of)\b/i, "").trim();
+  const hasComparisonCommand = /\b(compare|comparison of)\b/i.test(message);
+  const withoutCommand = hasComparisonCommand
+    ? message.replace(/^.*?\b(compare|comparison of)\b/i, "").trim()
+    : message.trim();
+  const hasPairSeparator = /\s+(?:and|vs\.?|versus|with)\s+/i.test(withoutCommand);
+
+  if (!hasComparisonCommand && !hasPairSeparator) {
+    return [];
+  }
+
   return withoutCommand
     .split(/\s+(?:and|vs\.?|versus|with)\s+/i)
     .map((name) => name.replace(/[?.!,]+$/g, "").trim())

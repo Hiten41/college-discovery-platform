@@ -6,7 +6,8 @@ import {
   isContextualFollowUp,
   updateActiveCollegeContext,
 } from "../lib/motu/context";
-import { buildDatabaseReply } from "../app/api/chat/route";
+import { parseComparisonNames } from "../lib/motu/retrieval";
+import { buildDatabaseReply, buildGeneralFallback } from "../app/api/chat/route";
 import type { CollegeRecord, RetrievalResult } from "../lib/motu/types";
 
 const availableNames = [
@@ -34,6 +35,58 @@ test("all supported contextual phrases are detected", () => {
   for (const message of messages) {
     assert.equal(isContextualFollowUp(message), true, message);
   }
+});
+
+test("general comparison correction is not treated as a college name", () => {
+  const message = "bt i asked for general comparison";
+  const classification = classifyQuery(message);
+
+  assert.equal(classification.type, "GENERAL_QUERY");
+  assert.deepEqual(parseComparisonNames(message), []);
+  assert.match(buildGeneralFallback(message), /General IIT vs NIT comparison/);
+});
+
+test("IIT vs NIT is handled as an institute-type comparison", () => {
+  const message = "IIT vs NIT";
+  const classification = classifyQuery(message);
+
+  assert.equal(classification.type, "GENERAL_QUERY");
+  assert.deepEqual(parseComparisonNames(message), ["IIT", "NIT"]);
+  assert.match(buildGeneralFallback(message), /branch \+ college tier/);
+});
+
+test("ownership question for a named college uses college details", () => {
+  const message = "is iit delhi government based";
+  const classification = classifyQuery(message);
+  const college: CollegeRecord = {
+    id: "test-iit-delhi",
+    name: "IIT Delhi",
+    location: "New Delhi",
+    state: "Delhi",
+    fees: 200000,
+    avgPackage: "25 LPA",
+    highestPackage: "2 Cr",
+    nirfRank: 2,
+    rating: 4.8,
+    ownership: "Government",
+    examsAccepted: ["JEE Advanced"],
+    description: "",
+    website: null,
+    image: null,
+    accreditation: null,
+    establishedYear: null,
+  };
+  const result: RetrievalResult = {
+    colleges: [college],
+    requestedNames: ["IIT Delhi"],
+    missingNames: [],
+    notes: [],
+  };
+  const reply = buildDatabaseReply(message, classification, result, ["IIT Delhi"]);
+
+  assert.equal(classification.type, "DATABASE_QUERY");
+  assert.equal(classification.operation, "COLLEGE_DETAILS");
+  assert.match(reply, /IIT Delhi is listed as a Government institution/);
 });
 
 test("college context survives a chain of contextual follow-ups", () => {

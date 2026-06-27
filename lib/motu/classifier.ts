@@ -57,6 +57,11 @@ export function classifyQuery(message: string): QueryClassification {
   const branch = extractBranch(message);
   const ownership = extractOwnership(message);
   const recommendation = /\b(recommend|suggest|best|shortlist|suitable|option)\b/.test(normalized);
+  const asksForGeneralComparison = /\b(general|overall|broad)\s+comparison\b/.test(normalized);
+  const comparesInstituteTypes =
+    /\biits?\b/.test(normalized) &&
+    /\bnits?\b/.test(normalized) &&
+    /\b(compare|comparison|versus|vs|difference|better)\b/.test(normalized);
 
   if (normalized === "debug database") {
     return {
@@ -78,6 +83,10 @@ export function classifyQuery(message: string): QueryClassification {
     return { type: "DATABASE_QUERY", operation: "LIST_COLLEGES", budget, studentRank, branch, location: null, ownership };
   }
 
+  if (asksForGeneralComparison || comparesInstituteTypes) {
+    return { type: "GENERAL_QUERY", operation: "GENERAL_GUIDANCE", budget, studentRank, branch, location: null, ownership };
+  }
+
   if (/\b(compare|comparison|versus|vs)\b/.test(normalized) || /\b(which one)\b/.test(normalized)) {
     return { type: "DATABASE_QUERY", operation: "COMPARE_COLLEGES", budget, studentRank, branch, location: null, ownership };
   }
@@ -96,6 +105,7 @@ export function classifyQuery(message: string): QueryClassification {
 
   if (
     /\b(collegehub|fees|fee|financial|aid|scholarship|scholarships|loan|loans|waiver|waivers|package|placements|nirf|rating)\b/.test(normalized) ||
+    (ownership !== null && /\b(college|institute|university|iit|nit|iiit)\b/.test(normalized)) ||
     (/\b(worth|good|value|roi|return|choose|prefer)\b/.test(normalized) && /\b(college|institute|university|iit|nit|iiit)\b/.test(normalized)) ||
     (/\b(tell me about|details of|information about)\b/.test(normalized) && /\b(college|institute|university|iit|nit|iiit)\b/.test(normalized))
   ) {

@@ -89,6 +89,46 @@ test("ownership question for a named college uses college details", () => {
   assert.match(reply, /IIT Delhi is listed as a Government institution/);
 });
 
+test("college count questions return the database record count", () => {
+  const messages = [
+    "give me total of how many colleges r listed on collegehub",
+    "give me total no. of colleges",
+  ];
+  const colleges: CollegeRecord[] = availableNames.map((name, index) => ({
+    id: `college-${index}`,
+    name,
+    location: index === 3 ? "Tiruchirappalli" : "Delhi",
+    state: index === 3 ? "Tamil Nadu" : "Delhi",
+    fees: 200000,
+    avgPackage: "20 LPA",
+    highestPackage: "1 Cr",
+    nirfRank: index + 1,
+    rating: 4.5,
+    ownership: "Government",
+    examsAccepted: ["JEE"],
+    description: "",
+    website: null,
+    image: null,
+    accreditation: null,
+    establishedYear: null,
+  }));
+  const result: RetrievalResult = {
+    colleges,
+    requestedNames: [],
+    missingNames: [],
+    notes: [],
+  };
+
+  for (const message of messages) {
+    const classification = classifyQuery(message);
+    const reply = buildDatabaseReply(message, classification, result, []);
+
+    assert.equal(classification.type, "DATABASE_QUERY", message);
+    assert.equal(classification.operation, "COUNT_COLLEGES", message);
+    assert.match(reply, /4 colleges listed/);
+  }
+});
+
 test("college context survives a chain of contextual follow-ups", () => {
   const expected = ["IIT Delhi", "NIT Trichy"];
   let context = updateActiveCollegeContext({

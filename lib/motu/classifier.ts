@@ -50,6 +50,14 @@ function extractOwnership(message: string): string | null {
   return null;
 }
 
+function isCollegeCountQuery(normalized: string): boolean {
+  return (
+    /\b(how many|total|count|number|no)\b/.test(normalized) &&
+    /\b(college|colleges)\b/.test(normalized) &&
+    /\b(listed|available|in collegehub|on collegehub|collegehub|database|total)\b/.test(normalized)
+  );
+}
+
 export function classifyQuery(message: string): QueryClassification {
   const normalized = normalizeText(message);
   const budget = extractBudget(message);
@@ -73,6 +81,10 @@ export function classifyQuery(message: string): QueryClassification {
       location: null,
       ownership,
     };
+  }
+
+  if (isCollegeCountQuery(normalized)) {
+    return { type: "DATABASE_QUERY", operation: "COUNT_COLLEGES", budget, studentRank, branch, location: null, ownership };
   }
 
   if (

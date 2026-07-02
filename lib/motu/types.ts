@@ -5,6 +5,7 @@ export type QueryType = "DATABASE_QUERY" | "GENERAL_QUERY" | "HYBRID_QUERY";
 export type QueryOperation =
   | "DEBUG_DATABASE"
   | "LIST_COLLEGES"
+  | "COUNT_COLLEGES"
   | "COLLEGE_DETAILS"
   | "COMPARE_COLLEGES"
   | "CONTEXT_FOLLOW_UP"

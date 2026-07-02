@@ -320,7 +320,11 @@ async function retrieveDatabaseContext(
   const allColleges = await getAllColleges();
   const availableCollegeNames = allColleges.map((college) => college.name);
 
-  if (contextualClassification.operation === "LIST_COLLEGES" || contextualClassification.operation === "DEBUG_DATABASE") {
+  if (
+    contextualClassification.operation === "LIST_COLLEGES" ||
+    contextualClassification.operation === "COUNT_COLLEGES" ||
+    contextualClassification.operation === "DEBUG_DATABASE"
+  ) {
     return {
       classification: contextualClassification,
       result: { ...emptyResult, colleges: allColleges },
@@ -436,6 +440,11 @@ export function buildDatabaseReply(
 
   if (classification.operation === "LIST_COLLEGES") {
     return result.colleges.map((college) => college.name).join("\n");
+  }
+
+  if (classification.operation === "COUNT_COLLEGES") {
+    const count = result.colleges.length;
+    return `CollegeHub currently has ${count.toLocaleString("en-IN")} college${count === 1 ? "" : "s"} listed.`;
   }
 
   if (classification.operation === "COLLEGE_DETAILS") {

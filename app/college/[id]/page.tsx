@@ -110,7 +110,7 @@ useEffect(() => {
 
 if (loading) {
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center text-3xl font-bold">
+    <div className="flex min-h-screen items-center justify-center bg-black px-4 text-center text-xl font-bold text-white md:text-3xl">
       Loading...
     </div>
   )
@@ -120,7 +120,7 @@ if (loading) {
 
     return (
 
-      <div className="min-h-screen bg-black text-white flex items-center justify-center text-4xl font-bold">
+      <div className="flex min-h-screen items-center justify-center bg-black px-4 text-center text-2xl font-bold text-white md:text-4xl">
 
         College Not Found
 
@@ -136,29 +136,29 @@ if (loading) {
 
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 md:py-10">
 
-        <div className="luxe-surface luxe-section relative overflow-hidden rounded-[40px] mb-12">
+        <div className="luxe-surface luxe-section relative mb-10 overflow-hidden rounded-[28px] md:mb-12 md:rounded-[40px]">
 
           <img
             src={college.image}
             alt=""
-            className="w-full h-[500px] object-cover"
+            className="h-[360px] w-full object-cover sm:h-[420px] md:h-[500px]"
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
-          <div className="absolute bottom-10 left-10">
+          <div className="absolute inset-x-5 bottom-5 sm:inset-x-8 md:bottom-10 md:left-10 md:right-auto">
 
-            <div className="flex items-center gap-4 mb-5">
+            <div className="mb-4 flex flex-wrap items-center gap-3 md:mb-5 md:gap-4">
 
-              <div className="bg-green-500 text-black px-5 py-2 rounded-full font-black">
+              <div className="rounded-full bg-green-500 px-4 py-2 text-sm font-black text-black md:px-5 md:text-base">
 
                 {college.rating}
 
               </div>
 
-              <div className="bg-white/10 backdrop-blur-xl border border-white/10 px-5 py-2 rounded-full font-bold">
+              <div className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold backdrop-blur-xl md:px-5 md:text-base">
 
                 NIRF #{college.nirfRank}
 
@@ -166,40 +166,40 @@ if (loading) {
 
             </div>
 
-            <h1 className="text-6xl font-black mb-4 max-w-4xl">
+            <h1 className="mb-3 max-w-4xl text-3xl font-black leading-tight sm:text-4xl md:mb-4 md:text-6xl">
 
               {college.name}
 
             </h1>
 
-           <p className="text-2xl text-gray-300 mb-4">
+           <p className="mb-4 text-lg text-gray-300 md:text-2xl">
 
               {college.location}
 
             </p>
-            <div className="flex flex-wrap gap-3 mt-4">
+            <div className="mt-4 flex flex-wrap gap-3 text-sm md:text-base">
 
-  <span className="px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-300">
+  <span className="rounded-full border border-green-500/20 bg-green-500/10 px-4 py-2 text-green-300">
     {college.ownership}
   </span>
 
-  <span className="px-4 py-2 rounded-full bg-[#202020] border border-[#2a2a2a] text-white">
+  <span className="rounded-full border border-[#2a2a2a] bg-[#202020] px-4 py-2 text-white">
     {college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}
   </span>
 
-  <span className="px-4 py-2 rounded-full bg-[#202020] border border-[#2a2a2a] text-white">
+  <span className="rounded-full border border-[#2a2a2a] bg-[#202020] px-4 py-2 text-white">
     Est. {college.establishedYear}
   </span>
 
 </div>
 
-     <div className="flex gap-5 flex-wrap">
+     <div className="mt-5 flex flex-wrap gap-3 md:gap-5">
 
   <button
     onClick={() =>
       setShowApplyModal(true)
     }
-    className="luxe-button bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black px-10 py-5 rounded-2xl shadow-[0_10px_40px_rgba(34,197,94,0.3)]"
+    className="luxe-button w-full rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 px-5 py-3 font-black text-black shadow-[0_10px_40px_rgba(34,197,94,0.3)] hover:from-green-400 hover:to-emerald-400 sm:w-auto md:px-10 md:py-5"
   >
     Apply Now
   </button>
@@ -207,7 +207,7 @@ if (loading) {
   <a
     href="/brochure.pdf"
     download
-    className="luxe-button bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-xl px-10 py-5 rounded-2xl font-bold inline-flex items-center"
+    className="luxe-button inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-5 py-3 font-bold backdrop-blur-xl hover:bg-white/20 sm:w-auto md:px-10 md:py-5"
   >
     Download Brochure
   </a>
@@ -216,7 +216,7 @@ if (loading) {
     href={college.website || "#"}
     target="_blank"
     rel="noopener noreferrer"
-    className="luxe-button bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-xl px-10 py-5 rounded-2xl font-bold inline-flex items-center"
+    className="luxe-button inline-flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/10 px-5 py-3 font-bold backdrop-blur-xl hover:bg-white/20 sm:w-auto md:px-10 md:py-5"
   >
     Official Website
   </a>
@@ -227,51 +227,51 @@ if (loading) {
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+        <div className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mb-16 md:grid-cols-4 md:gap-6">
 
-          <div className="bg-gradient-to-br from-[#1c1c1c] to-[#131313] border border-[#2a2a2a] rounded-[30px] p-8 hover:border-green-500/30 transition duration-300">
+          <div className="rounded-[24px] border border-[#2a2a2a] bg-gradient-to-br from-[#1c1c1c] to-[#131313] p-5 transition duration-300 hover:border-green-500/30 md:rounded-[30px] md:p-8">
 
             <p className="text-gray-500 mb-3">
               Annual Fees
             </p>
 
-            <h2 className="text-4xl font-black">
+            <h2 className="text-2xl font-black md:text-4xl">
               {college.fees}
             </h2>
 
           </div>
 
-          <div className="bg-gradient-to-br from-[#1c1c1c] to-[#131313] border border-[#2a2a2a] rounded-[30px] p-8 hover:border-green-500/30 transition duration-300">
+          <div className="rounded-[24px] border border-[#2a2a2a] bg-gradient-to-br from-[#1c1c1c] to-[#131313] p-5 transition duration-300 hover:border-green-500/30 md:rounded-[30px] md:p-8">
 
             <p className="text-gray-500 mb-3">
               Avg Package
             </p>
 
-            <h2 className="text-4xl font-black text-green-400">
+            <h2 className="text-2xl font-black text-green-400 md:text-4xl">
               {college.avgPackage}
             </h2>
 
           </div>
 
-          <div className="bg-gradient-to-br from-[#1c1c1c] to-[#131313] border border-[#2a2a2a] rounded-[30px] p-8 hover:border-green-500/30 transition duration-300">
+          <div className="rounded-[24px] border border-[#2a2a2a] bg-gradient-to-br from-[#1c1c1c] to-[#131313] p-5 transition duration-300 hover:border-green-500/30 md:rounded-[30px] md:p-8">
 
             <p className="text-gray-500 mb-3">
               Highest Package
             </p>
 
-            <h2 className="text-4xl font-black text-green-400">
+            <h2 className="text-2xl font-black text-green-400 md:text-4xl">
              {college.highestPackage || "N/A"}
             </h2>
 
           </div>
 
-          <div className="bg-gradient-to-br from-[#1c1c1c] to-[#131313] border border-[#2a2a2a] rounded-[30px] p-8 hover:border-green-500/30 transition duration-300">
+          <div className="rounded-[24px] border border-[#2a2a2a] bg-gradient-to-br from-[#1c1c1c] to-[#131313] p-5 transition duration-300 hover:border-green-500/30 md:rounded-[30px] md:p-8">
 
             <p className="text-gray-500 mb-3">
               Placement Rate
             </p>
 
-            <h2 className="text-4xl font-black text-green-400">
+            <h2 className="text-2xl font-black text-green-400 md:text-4xl">
             N/A
             </h2>
 
@@ -279,65 +279,65 @@ if (loading) {
 
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-10">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_350px] lg:gap-10">
 
-          <div className="space-y-10">            <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10">
+          <div className="space-y-8 md:space-y-10">            <div className="rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-6 md:rounded-[32px] md:p-10">
 
-              <h2 className="text-4xl font-black mb-6">
+              <h2 className="mb-5 text-2xl font-black md:mb-6 md:text-4xl">
 
                 About College
 
               </h2>
 
-              <p className="text-gray-400 text-lg leading-relaxed">
+              <p className="text-base leading-relaxed text-gray-400 md:text-lg">
 
               {college.description}
 
               </p>
-              <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10 mt-10">
+              <div className="mt-8 rounded-[26px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-5 md:mt-10 md:rounded-[32px] md:p-10">
 
-  <h2 className="text-4xl font-black text-white mb-8">
+  <h2 className="mb-6 text-2xl font-black text-white md:mb-8 md:text-4xl">
     College Information
   </h2>
 
-  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div className="grid gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-4">
 
-    <div className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-2xl p-6">
+    <div className="rounded-2xl border border-[#2a2a2a] bg-[#1b1b1b] p-5 md:p-6">
       <p className="text-gray-500 mb-2">
         Established
       </p>
 
-      <p className="text-xl font-bold text-white">
+      <p className="text-lg font-bold text-white md:text-xl">
         {college.establishedYear || "N/A"}
       </p>
     </div>
 
-    <div className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-2xl p-6">
+    <div className="rounded-2xl border border-[#2a2a2a] bg-[#1b1b1b] p-5 md:p-6">
       <p className="text-gray-500 mb-2">
         Ownership
       </p>
 
-      <p className="text-xl font-bold text-white">
+      <p className="text-lg font-bold text-white md:text-xl">
         {college.ownership || "N/A"}
       </p>
     </div>
 
-    <div className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-2xl p-6">
+    <div className="rounded-2xl border border-[#2a2a2a] bg-[#1b1b1b] p-5 md:p-6">
       <p className="text-gray-500 mb-2">
         Accreditation
       </p>
 
-      <p className="text-xl font-bold text-white">
+      <p className="text-lg font-bold text-white md:text-xl">
         {college.accreditation || "N/A"}
       </p>
     </div>
 
-    <div className="bg-[#1b1b1b] border border-[#2a2a2a] rounded-2xl p-6">
+    <div className="rounded-2xl border border-[#2a2a2a] bg-[#1b1b1b] p-5 md:p-6">
       <p className="text-gray-500 mb-2">
         Exam Accepted
       </p>
 
-      <p className="text-xl font-bold text-white">
+      <p className="text-lg font-bold text-white md:text-xl">
         {college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}
       </p>
     </div>
@@ -348,29 +348,29 @@ if (loading) {
 
             </div>
 
-            <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10">
+            <div className="rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-6 md:rounded-[32px] md:p-10">
 
-              <h2 className="text-4xl font-black mb-8">
+              <h2 className="mb-6 text-2xl font-black md:mb-8 md:text-4xl">
 
                 Top Recruiters
 
               </h2>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-2xl p-6 text-center font-bold hover:border-green-500/30 transition duration-300">
+                <div className="rounded-2xl border border-[#2a2a2a] bg-[#202020] p-4 text-center font-bold transition duration-300 hover:border-green-500/30 md:p-6">
                   Google
                 </div>
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-2xl p-6 text-center font-bold hover:border-green-500/30 transition duration-300">
+                <div className="rounded-2xl border border-[#2a2a2a] bg-[#202020] p-4 text-center font-bold transition duration-300 hover:border-green-500/30 md:p-6">
                   Microsoft
                 </div>
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-2xl p-6 text-center font-bold hover:border-green-500/30 transition duration-300">
+                <div className="rounded-2xl border border-[#2a2a2a] bg-[#202020] p-4 text-center font-bold transition duration-300 hover:border-green-500/30 md:p-6">
                   Amazon
                 </div>
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-2xl p-6 text-center font-bold hover:border-green-500/30 transition duration-300">
+                <div className="rounded-2xl border border-[#2a2a2a] bg-[#202020] p-4 text-center font-bold transition duration-300 hover:border-green-500/30 md:p-6">
                   Adobe
                 </div>
 
@@ -378,19 +378,19 @@ if (loading) {
 
             </div>
 
-            <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10">
+            <div className="rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-6 md:rounded-[32px] md:p-10">
 
-              <div className="flex items-center justify-between mb-10">
+              <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between md:mb-10">
 
                 <div>
 
-                  <h2 className="text-4xl font-black mb-3">
+                  <h2 className="mb-3 text-2xl font-black md:text-4xl">
 
                     Placement Analytics
 
                   </h2>
 
-                  <p className="text-gray-500 text-lg">
+                  <p className="text-base text-gray-500 md:text-lg">
 
                     Latest placement performance overview
 
@@ -398,7 +398,7 @@ if (loading) {
 
                 </div>
 
-                <div className="bg-green-500/10 border border-green-500/20 px-5 py-3 rounded-2xl text-green-400 font-bold">
+                <div className="w-fit rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-2 font-bold text-green-400 md:px-5 md:py-3">
 
                   2025 Report
 
@@ -406,13 +406,13 @@ if (loading) {
 
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-7 md:space-y-8">
 
                 <div>
 
                   <div className="flex items-center justify-between mb-3">
 
-                    <span className="text-lg font-semibold">
+                    <span className="text-base font-semibold md:text-lg">
                       Placement Rate
                     </span>
 
@@ -434,7 +434,7 @@ if (loading) {
 
                   <div className="flex items-center justify-between mb-3">
 
-                    <span className="text-lg font-semibold">
+                    <span className="text-base font-semibold md:text-lg">
                       Internship Offers
                     </span>
 
@@ -456,7 +456,7 @@ if (loading) {
 
                   <div className="flex items-center justify-between mb-3">
 
-                    <span className="text-lg font-semibold">
+                    <span className="text-base font-semibold md:text-lg">
                       Dream Offers
                     </span>
 
@@ -476,39 +476,39 @@ if (loading) {
 
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+              <div className="mt-10 grid grid-cols-1 gap-4 md:mt-12 md:grid-cols-3 md:gap-6">
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-3xl p-6">
+                <div className="rounded-3xl border border-[#2a2a2a] bg-[#202020] p-5 md:p-6">
 
                   <p className="text-gray-500 mb-3">
                     Highest International
                   </p>
 
-                  <h3 className="text-3xl font-black text-green-400">
+                  <h3 className="text-2xl font-black text-green-400 md:text-3xl">
                     {college.highestPackage || "N/A"}
                   </h3>
 
                 </div>
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-3xl p-6">
+                <div className="rounded-3xl border border-[#2a2a2a] bg-[#202020] p-5 md:p-6">
 
                   <p className="text-gray-500 mb-3">
                     Highest Domestic
                   </p>
 
-                  <h3 className="text-3xl font-black text-green-400">
-                    ₹64L
+                  <h3 className="text-2xl font-black text-green-400 md:text-3xl">
+                    Rs.64L
                   </h3>
 
                 </div>
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-3xl p-6">
+                <div className="rounded-3xl border border-[#2a2a2a] bg-[#202020] p-5 md:p-6">
 
                   <p className="text-gray-500 mb-3">
                     Avg CTC
                   </p>
 
-                  <h3 className="text-3xl font-black text-green-400">
+                  <h3 className="text-2xl font-black text-green-400 md:text-3xl">
                     {college.avgPackage}
                   </h3>
 
@@ -516,9 +516,9 @@ if (loading) {
 
               </div>
 
-            </div>            <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10">
+            </div>            <div className="rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-6 md:rounded-[32px] md:p-10">
 
-              <h2 className="text-4xl font-black mb-8">
+              <h2 className="mb-6 text-2xl font-black md:mb-8 md:text-4xl">
 
                 Facilities
 
@@ -526,23 +526,23 @@ if (loading) {
 
               <div className="flex flex-wrap gap-4">
 
-                <div className="px-6 py-4 rounded-2xl bg-[#202020] border border-[#2a2a2a]">
+                <div className="rounded-2xl border border-[#2a2a2a] bg-[#202020] px-4 py-3 text-sm md:px-6 md:py-4 md:text-base">
                   Hostel
                 </div>
 
-                <div className="px-6 py-4 rounded-2xl bg-[#202020] border border-[#2a2a2a]">
+                <div className="rounded-2xl border border-[#2a2a2a] bg-[#202020] px-4 py-3 text-sm md:px-6 md:py-4 md:text-base">
                   Sports Complex
                 </div>
 
-                <div className="px-6 py-4 rounded-2xl bg-[#202020] border border-[#2a2a2a]">
+                <div className="rounded-2xl border border-[#2a2a2a] bg-[#202020] px-4 py-3 text-sm md:px-6 md:py-4 md:text-base">
                   Central Library
                 </div>
 
-                <div className="px-6 py-4 rounded-2xl bg-[#202020] border border-[#2a2a2a]">
+                <div className="rounded-2xl border border-[#2a2a2a] bg-[#202020] px-4 py-3 text-sm md:px-6 md:py-4 md:text-base">
                   WiFi Campus
                 </div>
 
-                <div className="px-6 py-4 rounded-2xl bg-[#202020] border border-[#2a2a2a]">
+                <div className="rounded-2xl border border-[#2a2a2a] bg-[#202020] px-4 py-3 text-sm md:px-6 md:py-4 md:text-base">
                   Labs
                 </div>
 
@@ -550,9 +550,9 @@ if (loading) {
 
             </div>
 
-            <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10">
+            <div className="rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-6 md:rounded-[32px] md:p-10">
 
-              <h2 className="text-4xl font-black mb-8">
+              <h2 className="mb-6 text-2xl font-black md:mb-8 md:text-4xl">
 
                 Popular Courses
 
@@ -560,11 +560,11 @@ if (loading) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-3xl p-6 hover:border-green-500/30 transition duration-300">
+                <div className="rounded-3xl border border-[#2a2a2a] bg-[#202020] p-5 transition duration-300 hover:border-green-500/30 md:p-6">
 
-                  <div className="flex items-center justify-between mb-5">
+                  <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 
-                    <h3 className="text-2xl font-black">
+                    <h3 className="text-xl font-black md:text-2xl">
                       B.Tech CSE
                     </h3>
 
@@ -594,11 +594,11 @@ if (loading) {
 
                 </div>
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-3xl p-6 hover:border-green-500/30 transition duration-300">
+                <div className="rounded-3xl border border-[#2a2a2a] bg-[#202020] p-5 transition duration-300 hover:border-green-500/30 md:p-6">
 
-                  <div className="flex items-center justify-between mb-5">
+                  <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 
-                    <h3 className="text-2xl font-black">
+                    <h3 className="text-xl font-black md:text-2xl">
                       MBA
                     </h3>
 
@@ -632,9 +632,9 @@ if (loading) {
 
             </div>
 
-            <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10">
+            <div className="rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-6 md:rounded-[32px] md:p-10">
 
-              <h2 className="text-4xl font-black mb-8">
+              <h2 className="mb-6 text-2xl font-black md:mb-8 md:text-4xl">
 
                 Student Reviews
 
@@ -642,11 +642,11 @@ if (loading) {
 
               <div className="space-y-6">
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-3xl p-6">
+                <div className="rounded-3xl border border-[#2a2a2a] bg-[#202020] p-5 md:p-6">
 
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 
-                    <h3 className="text-2xl font-black">
+                    <h3 className="text-xl font-black md:text-2xl">
                       Aarav Sharma
                     </h3>
 
@@ -664,11 +664,11 @@ if (loading) {
 
                 </div>
 
-                <div className="bg-[#202020] border border-[#2a2a2a] rounded-3xl p-6">
+                <div className="rounded-3xl border border-[#2a2a2a] bg-[#202020] p-5 md:p-6">
 
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 
-                    <h3 className="text-2xl font-black">
+                    <h3 className="text-xl font-black md:text-2xl">
                       Priya Verma
                     </h3>
 
@@ -688,9 +688,9 @@ if (loading) {
 
               </div>
 
-            </div>            <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10">
+            </div>            <div className="rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-6 md:rounded-[32px] md:p-10">
 
-              <h2 className="text-4xl font-black mb-8">
+              <h2 className="mb-6 text-2xl font-black md:mb-8 md:text-4xl">
 
                 Campus Gallery
 
@@ -722,11 +722,11 @@ if (loading) {
 
           </div>
 
-          <div className="h-fit sticky top-28">
+          <div className="h-fit lg:sticky lg:top-28">
 
-            <div className="bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-8">
+            <div className="rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-6 md:rounded-[32px] md:p-8">
 
-              <h2 className="text-3xl font-black mb-8">
+              <h2 className="mb-6 text-2xl font-black md:mb-8 md:text-3xl">
 
                 Quick Highlights
 
@@ -788,7 +788,7 @@ if (loading) {
   onClick={() =>
     setShowApplyModal(true)
   }
-  className="w-full mt-10 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-black font-black py-5 rounded-2xl transition duration-300 hover:scale-105"
+  className="mt-8 w-full rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500 py-4 font-black text-black transition duration-300 hover:scale-105 hover:from-green-400 hover:to-emerald-400 md:mt-10 md:py-5"
 >
   Apply For Admission
 </button>
@@ -799,11 +799,11 @@ if (loading) {
 
         </div>
 
-        <div className="mt-16">
+        <div className="mt-12 md:mt-16">
 
-          <div className="flex items-center justify-between mb-8">
+          <div className="mb-6 flex items-center justify-between md:mb-8">
 
-            <h2 className="text-4xl font-black">
+            <h2 className="text-2xl font-black md:text-4xl">
 
               Similar Colleges
 
@@ -817,7 +817,7 @@ if (loading) {
 
                 <div
                   key={item.id}
-                  className="group bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] overflow-hidden hover:border-green-500/30 transition duration-500 hover:-translate-y-2"
+                  className="group overflow-hidden rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] transition duration-500 hover:-translate-y-2 hover:border-green-500/30 md:rounded-[32px]"
                 >
 
                   <img
@@ -828,7 +828,7 @@ if (loading) {
 
                   <div className="p-6">
 
-                    <h3 className="text-2xl font-black mb-3">
+                    <h3 className="mb-3 text-xl font-black md:text-2xl">
 
                       {item.name}
 
@@ -873,9 +873,9 @@ if (loading) {
 
           </div>
 
-        </div>        <div className="mt-16 bg-gradient-to-br from-[#181818] to-[#121212] border border-[#2a2a2a] rounded-[32px] p-10">
+        </div>        <div className="mt-12 rounded-[28px] border border-[#2a2a2a] bg-gradient-to-br from-[#181818] to-[#121212] p-6 md:mt-16 md:rounded-[32px] md:p-10">
 
-          <h2 className="text-4xl font-black mb-10">
+          <h2 className="mb-6 text-2xl font-black md:mb-10 md:text-4xl">
 
             Frequently Asked Questions
 
@@ -915,22 +915,22 @@ if (loading) {
               : index
           )
         }
-        className="w-full flex items-center justify-between p-6 text-left"
+        className="flex w-full items-center justify-between gap-4 p-5 text-left md:p-6"
       >
 
-        <span className="text-xl font-bold">
+        <span className="text-base font-bold md:text-xl">
           {faq.q}
         </span>
 
         <span className="text-green-400 text-2xl font-black">
-          {openFaq === index ? "−" : "+"}
+          {openFaq === index ? "-" : "+"}
         </span>
 
       </button>
 
       {openFaq === index && (
 
-        <div className="px-6 pb-6">
+        <div className="px-5 pb-5 md:px-6 md:pb-6">
 
           <p className="text-gray-400 leading-relaxed">
             {faq.a}
@@ -951,20 +951,20 @@ if (loading) {
       </div>
       {applicationSubmitted && (
 
-  <div className="fixed bottom-8 right-8 bg-green-500 text-black font-black px-6 py-4 rounded-2xl z-50 shadow-xl">
+  <div className="fixed inset-x-4 bottom-4 z-50 rounded-2xl bg-green-500 px-5 py-4 text-center font-black text-black shadow-xl md:inset-x-auto md:bottom-8 md:right-8 md:px-6">
 
-    ✓ Application Submitted
+    Application Submitted
 
   </div>
 
 )}
 {showApplyModal && (
 
-  <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
 
-    <div className="bg-[#181818] border border-[#2a2a2a] rounded-[32px] p-8 w-full max-w-lg">
+    <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[28px] border border-[#2a2a2a] bg-[#181818] p-6 md:rounded-[32px] md:p-8">
 
-      <h2 className="text-3xl font-black mb-6">
+      <h2 className="mb-6 text-2xl font-black md:text-3xl">
         Apply To {college.name}
       </h2>
 
@@ -988,7 +988,7 @@ if (loading) {
         className="w-full mb-6 bg-[#232323] p-4 rounded-2xl"
       />
 
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
 
         <button
           onClick={() => {

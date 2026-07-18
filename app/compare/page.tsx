@@ -87,7 +87,7 @@ const [isDockOpen, setIsDockOpen] = useState(false);
   }
 
   return (
-  <div className="premium-depth-root min-h-screen relative overflow-hidden pb-36">
+  <div className="premium-depth-root min-h-screen relative overflow-x-hidden pb-36">
 <div className="absolute inset-0">
 
   <div
@@ -272,7 +272,7 @@ const [isDockOpen, setIsDockOpen] = useState(false);
 
           </div>
 
-          <div className="luxe-surface rounded-3xl p-6">
+          <div className="luxe-surface rounded-3xl p-4 md:p-6 overflow-x-auto">
 
             <p className="text-zinc-500 mb-3">
               Best Package
@@ -310,7 +310,48 @@ const [isDockOpen, setIsDockOpen] = useState(false);
 
         </div>
 
-        <div className="luxe-surface overflow-x-auto rounded-3xl">
+        <div className="md:hidden mb-10">
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-300">
+              Swipe sideways
+            </p>
+            <p className="text-xs font-semibold text-zinc-500">
+              {colleges.length} colleges
+            </p>
+          </div>
+          <div className="compare-dock-scroll flex max-w-full snap-x gap-4 overflow-x-auto pb-3">
+            {colleges.map((college) => (
+              <article
+                key={college.id}
+                className="luxe-surface luxe-card w-[82vw] max-w-[330px] shrink-0 snap-start rounded-[28px] p-4"
+              >
+                <img
+                  src={college.image}
+                  alt={college.name}
+                  className="h-36 w-full rounded-2xl object-cover"
+                />
+                <h3 className="mt-4 text-xl font-black leading-6 text-white">
+                  {college.name}
+                </h3>
+                <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-zinc-500">
+                  <MapPin className="h-3.5 w-3.5 text-emerald-300" />
+                  {college.location}
+                </p>
+                <div className="mt-5 space-y-3">
+                  <MobileMetric label="Fees" value={`Rs. ${college.fees?.toLocaleString("en-IN")}`} tone="text-orange-300" />
+                  <MobileMetric label="Avg Package" value={college.avgPackage} tone="text-violet-300" />
+                  <MobileMetric label="NIRF Rank" value={`#${college.nirfRank}`} tone="text-green-300" />
+                  <MobileMetric label="Ownership" value={college.ownership || "-"} tone="text-white" />
+                  <MobileMetric label="Exam" value={college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "-"} tone="text-white" />
+                  <MobileMetric label="Highest" value={college.highestPackage || "-"} tone="text-cyan-300" />
+                  <MobileMetric label="Rating" value={String(college.rating)} tone="text-emerald-300" />
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="luxe-surface hidden overflow-x-auto rounded-3xl md:block">
 
     <table className="w-full min-w-[760px] text-left text-sm md:text-xl">
 
@@ -516,7 +557,7 @@ const [isDockOpen, setIsDockOpen] = useState(false);
               Average Package Comparison
             </h3>
 
-            <div className="h-[320px] min-w-[420px]">
+            <div className="h-[320px] min-w-[340px] sm:min-w-[420px]">
 
             <ResponsiveContainer width="100%" height={300}>
 
@@ -568,7 +609,7 @@ const [isDockOpen, setIsDockOpen] = useState(false);
               Annual Fees Comparison
             </h3>
 
-            <div className="h-[320px] min-w-[420px]">
+            <div className="h-[320px] min-w-[340px] sm:min-w-[420px]">
 
             <ResponsiveContainer width="100%" height={300}>
 
@@ -694,6 +735,25 @@ const [isDockOpen, setIsDockOpen] = useState(false);
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function MobileMetric({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: string;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-3 last:border-b-0 last:pb-0">
+      <span className="text-sm font-semibold text-zinc-500">{label}</span>
+      <span className={`max-w-[58%] text-right text-sm font-black ${tone}`}>
+        {value}
+      </span>
     </div>
   );
 }

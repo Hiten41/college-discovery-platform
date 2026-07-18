@@ -107,18 +107,6 @@ useEffect(() => {
     return () => clearTimeout(timer)
   }, [searchTerm])
   useEffect(() => {
-  const handlePageShow = () => {
-    window.location.reload()
-  }
-
-  window.addEventListener("pageshow", handlePageShow)
-
-  return () => {
-    window.removeEventListener("pageshow", handlePageShow)
-  }
-}, [])
-
-  useEffect(() => {
     const hasInitial = Array.isArray(initialColleges) && initialColleges.length > 0
     const noFilters =
   !debouncedSearch.trim() &&
@@ -262,7 +250,7 @@ useEffect(() => {
     } else {
       setDisplayText(currentText.slice(0, index - 1))
 
-      index-=4
+      index-=2
 
       if (index <= 0) {
         clearInterval(interval)
@@ -272,7 +260,7 @@ useEffect(() => {
         )
       }
     }
-  }, deleting ? 5 : 70)
+  }, deleting ? 35 : 115)
 
   return () => clearInterval(interval)
 }, [textIndex])
@@ -842,13 +830,13 @@ max-w-2xl
 
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="flex max-w-full snap-x gap-4 overflow-x-auto pb-3 md:grid md:grid-cols-2 md:gap-8 md:overflow-visible md:pb-0 lg:grid-cols-3">
 
         {compareColleges.map((college) => (
 
           <div
             key={college.id}
-            className="luxe-surface luxe-card rounded-[32px] overflow-hidden"
+            className="luxe-surface luxe-card w-[82vw] max-w-[340px] shrink-0 snap-start overflow-hidden rounded-[32px] md:w-auto md:max-w-none"
           >
 
             <img
@@ -1116,12 +1104,12 @@ hover:scale-105
             </div>
           </div>
 
-          <div className="relative min-w-0">
+          <div className="relative min-w-0 max-w-full overflow-hidden">
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-12 bg-gradient-to-r from-[#030409] via-[#030409]/75 to-transparent md:block" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-12 bg-gradient-to-l from-[#030409] via-[#030409]/75 to-transparent md:block" />
 
             <div
-              className="college-card-scroll flex snap-x gap-6 overflow-x-auto pb-4 md:gap-8 xl:gap-10"
+              className="college-card-scroll flex w-full max-w-full snap-x gap-6 overflow-x-auto pb-4 md:gap-8 xl:gap-10"
               onWheel={(event) => {
                 if (!event.shiftKey) return
                 event.currentTarget.scrollLeft += event.deltaY

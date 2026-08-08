@@ -93,6 +93,43 @@ function parseActiveCollegeContext(value: unknown): ActiveCollegeContext {
     .slice(0, 10);
 }
 
+export function isAbusiveMessage(message: string): boolean {
+  const normalized = normalizeText(message);
+  if (!normalized) return false;
+
+  const abusiveTerms = [
+    "madarchod",
+    "madarchodh",
+    "motherfucker",
+    "bhenchod",
+    "behenchod",
+    "benchod",
+    "bhosdike",
+    "bhosdi",
+    "bsdk",
+    "b s d k",
+    "chutiya",
+    "chutia",
+    "gaand",
+    "gandu",
+    "gaandu",
+    "laude",
+    "loda",
+    "lund",
+    "teri bund",
+  ];
+
+  return abusiveTerms.some((term) => normalized.includes(term));
+}
+
+export function buildAbuseFallback(): string {
+  return [
+    "Please keep the chat respectful.",
+    "",
+    "I am here to help with colleges, placements, fees, rankings, exams, admissions, and career paths. Ask a college-related question and I will help properly.",
+  ].join("\n");
+}
+
 async function resolveFollowUpCollegeContext(
   message: string,
   history: ChatHistoryMessage[],
@@ -645,6 +682,13 @@ export async function POST(request: Request) {
         { error: "Please send a valid message under 1200 characters." },
         { status: 400 },
       );
+    }
+
+    if (isAbusiveMessage(message)) {
+      return NextResponse.json({
+        reply: buildAbuseFallback(),
+        activeCollegeContext: parseActiveCollegeContext(body.activeCollegeContext),
+      });
     }
 
     const history = parseHistory(body.history);

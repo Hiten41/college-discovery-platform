@@ -7,7 +7,12 @@ import {
   updateActiveCollegeContext,
 } from "../lib/motu/context";
 import { parseComparisonNames } from "../lib/motu/retrieval";
-import { buildDatabaseReply, buildGeneralFallback } from "../app/api/chat/route";
+import {
+  buildAbuseFallback,
+  buildDatabaseReply,
+  buildGeneralFallback,
+  isAbusiveMessage,
+} from "../app/api/chat/route";
 import type { CollegeRecord, RetrievalResult } from "../lib/motu/types";
 
 const availableNames = [
@@ -35,6 +40,23 @@ test("all supported contextual phrases are detected", () => {
   for (const message of messages) {
     assert.equal(isContextualFollowUp(message), true, message);
   }
+});
+
+test("abusive messages use a respectful boundary response", () => {
+  const messages = ["madarchod", "bsdk", "teri bund"];
+
+  for (const message of messages) {
+    assert.equal(isAbusiveMessage(message), true, message);
+  }
+
+  const reply = buildAbuseFallback();
+  assert.match(reply, /Please keep the chat respectful/);
+  assert.doesNotMatch(reply, /Is IIT Kanpur worth it/);
+});
+
+test("normal college messages are not treated as abusive", () => {
+  assert.equal(isAbusiveMessage("best colleges under Rs. 2L fees"), false);
+  assert.equal(isAbusiveMessage("financial aid in IIT Delhi"), false);
 });
 
 test("general comparison correction is not treated as a college name", () => {

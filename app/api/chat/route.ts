@@ -188,6 +188,12 @@ function isOwnershipQuestion(message: string): boolean {
   );
 }
 
+function isPlacementStatsQuestion(message: string): boolean {
+  return /\b(placement|placements|package|packages|ctc|stats|statistics)\b/.test(
+    normalizeText(message),
+  );
+}
+
 function buildOwnershipReply(college: CollegeRecord): string {
   const ownership = college.ownership ?? "N/A";
   const article = /^[aeiou]/i.test(ownership) ? "an" : "a";
@@ -199,6 +205,22 @@ function buildOwnershipReply(college: CollegeRecord): string {
     `- **Ownership:** ${ownership}`,
     `- **Location:** ${college.location}${college.state ? `, ${college.state}` : ""}`,
     `- **Exams accepted:** ${college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}`,
+  ].join("\n");
+}
+
+function buildPlacementStatsReply(college: CollegeRecord): string {
+  return [
+    `**${college.name} placement snapshot from CollegeHub:**`,
+    "",
+    `- **Average package:** ${college.avgPackage ?? "N/A"}`,
+    `- **Highest package:** ${college.highestPackage ?? "N/A"}`,
+    `- **NIRF rank:** ${college.nirfRank ?? "N/A"}`,
+    `- **Fees:** ${formatFees(college.fees)}`,
+    `- **Rating:** ${college.rating ?? "N/A"}`,
+    `- **Location:** ${college.location}${college.state ? `, ${college.state}` : ""}`,
+    `- **Exams accepted:** ${college.examsAccepted.length > 0 ? college.examsAccepted.join(", ") : "N/A"}`,
+    "",
+    "CollegeHub does not store branch-wise placement percentages, median CTC, recruiter counts, or year-wise placement reports yet. For final admission decisions, verify the latest official placement report from the institute.",
   ].join("\n");
 }
 
@@ -487,6 +509,9 @@ export function buildDatabaseReply(
   if (classification.operation === "COLLEGE_DETAILS") {
     if (result.colleges.length === 0) {
       return "I could not find that college in the CollegeHub database.";
+    }
+    if (isPlacementStatsQuestion(message) && result.colleges.length === 1) {
+      return buildPlacementStatsReply(result.colleges[0]);
     }
     if (isOwnershipQuestion(message) && result.colleges.length === 1) {
       return buildOwnershipReply(result.colleges[0]);

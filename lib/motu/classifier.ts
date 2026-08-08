@@ -116,7 +116,7 @@ export function classifyQuery(message: string): QueryClassification {
   }
 
   if (
-    /\b(collegehub|fees|fee|financial|aid|scholarship|scholarships|loan|loans|waiver|waivers|package|placements|nirf|rating)\b/.test(normalized) ||
+    /\b(collegehub|fees|fee|financial|aid|scholarship|scholarships|loan|loans|waiver|waivers|package|packages|placement|placements|stats|statistics|nirf|rating)\b/.test(normalized) ||
     (ownership !== null && /\b(college|institute|university|iit|nit|iiit)\b/.test(normalized)) ||
     (/\b(worth|good|value|roi|return|choose|prefer)\b/.test(normalized) && /\b(college|institute|university|iit|nit|iiit)\b/.test(normalized)) ||
     (/\b(tell me about|details of|information about)\b/.test(normalized) && /\b(college|institute|university|iit|nit|iiit)\b/.test(normalized))

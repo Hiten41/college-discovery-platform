@@ -111,6 +111,42 @@ test("ownership question for a named college uses college details", () => {
   assert.match(reply, /IIT Delhi is listed as a Government institution/);
 });
 
+test("placement stats for a named college use stored placement data", () => {
+  const message = "iit kanpur placement stats?";
+  const classification = classifyQuery(message);
+  const college: CollegeRecord = {
+    id: "test-iit-kanpur",
+    name: "IIT Kanpur",
+    location: "Kanpur",
+    state: "Uttar Pradesh",
+    fees: 230000,
+    avgPackage: "26 LPA",
+    highestPackage: "1.2 Cr",
+    nirfRank: 4,
+    rating: 4.8,
+    ownership: "Government",
+    examsAccepted: ["JEE Advanced"],
+    description: "",
+    website: null,
+    image: null,
+    accreditation: null,
+    establishedYear: null,
+  };
+  const result: RetrievalResult = {
+    colleges: [college],
+    requestedNames: ["IIT Kanpur"],
+    missingNames: [],
+    notes: [],
+  };
+  const reply = buildDatabaseReply(message, classification, result, ["IIT Kanpur"]);
+
+  assert.equal(classification.type, "DATABASE_QUERY");
+  assert.equal(classification.operation, "COLLEGE_DETAILS");
+  assert.match(reply, /IIT Kanpur placement snapshot/);
+  assert.match(reply, /Average package:\*\* 26 LPA/);
+  assert.doesNotMatch(reply, /CollegeHub's college guidance assistant/);
+});
+
 test("college count questions return the database record count", () => {
   const messages = [
     "give me total of how many colleges r listed on collegehub",
